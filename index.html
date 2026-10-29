@@ -1,0 +1,4114 @@
+<!doctype html>
+<html lang="vi" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bài Giảng Qbit: Quang Học Lượng Tử Phi Tuyến ([26] - [39])</title>
+    <style>
+      :root {
+        --bg: #f8fafc;
+        --surface: #ffffff;
+        --surface-alt: #f1f5f9;
+        --text: #0f172a;
+        --text-muted: #475569;
+        --primary: #0f766e;
+        --primary-light: #ccfbf1;
+        --primary-dark: #115e59;
+        --accent: #d97706;
+        --accent-light: #fef3c7;
+        --danger: #dc2626;
+        --danger-light: #fee2e2;
+        --success: #16a34a;
+        --success-light: #dcfce7;
+        --border: #e2e8f0;
+        --shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.08);
+        --radius: 14px;
+        --font-Scale: 1;
+      }
+
+      [data-theme="dark"] {
+        --bg: #0b1120;
+        --surface: #1e293b;
+        --surface-alt: #0f172a;
+        --text: #f8fafc;
+        --text-muted: #94a3b8;
+        --primary: #14b8a6;
+        --primary-light: rgba(20, 184, 166, 0.15);
+        --primary-dark: #2dd4bf;
+        --accent: #f59e0b;
+        --accent-light: rgba(245, 158, 11, 0.15);
+        --danger: #f87171;
+        --danger-light: rgba(248, 113, 113, 0.15);
+        --success: #4ade80;
+        --success-light: rgba(74, 222, 128, 0.15);
+        --border: #334155;
+        --shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4);
+      }
+
+      body.presentation-mode {
+        --font-Scale: 1.22;
+      }
+
+      body.presentation-mode .secondary-detail {
+        display: none !important;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html {
+        scroll-behavior: smooth;
+        font-size: calc(16px * var(--font-Scale));
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+          Arial, sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
+        line-height: 1.65;
+        transition:
+          background-color 0.25s ease,
+          color 0.25s ease;
+        overflow-x: hidden;
+      }
+
+      /* Thanh tiến độ đọc */
+      #progress-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: var(--border);
+        z-index: 1000;
+      }
+
+      #progress-bar {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, var(--primary), var(--accent));
+        transition: width 0.1s ease-out;
+      }
+
+      /* Thanh điều hướng đỉnh */
+      header.top-bar {
+        position: sticky;
+        top: 5px;
+        z-index: 900;
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+        padding: 0.75rem 1.5rem;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        box-shadow: var(--shadow);
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-weight: 800;
+        font-size: 1.15rem;
+        color: var(--primary);
+      }
+
+      .brand-badge {
+        background: var(--primary);
+        color: #fff;
+        padding: 0.2rem 0.6rem;
+        border-radius: 8px;
+        font-size: 0.85rem;
+      }
+
+      .controls {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        background: var(--surface-alt);
+        color: var(--text);
+        border: 1px solid var(--border);
+        padding: 0.5rem 0.9rem;
+        border-radius: 10px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        transition: all 0.2s ease;
+      }
+
+      .btn:hover {
+        border-color: var(--primary);
+        color: var(--primary);
+      }
+
+      .btn.active {
+        background: var(--primary);
+        color: #fff;
+        border-color: var(--primary);
+      }
+
+      /* Bố cục chính: Sidebar cố định + Nội dung bài giảng */
+      .layout {
+        max-width: 1360px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 280px 1fr;
+        gap: 2rem;
+        padding: 1.5rem;
+      }
+
+      @media (max-width: 992px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* Thanh mục lục cố định */
+      aside.sidebar {
+        position: sticky;
+        top: 80px;
+        height: calc(100vh - 100px);
+        overflow-y: auto;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.25rem;
+        box-shadow: var(--shadow);
+      }
+
+      @media (max-width: 992px) {
+        aside.sidebar {
+          position: static;
+          height: auto;
+        }
+      }
+
+      .sidebar-title {
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--text-muted);
+        margin-bottom: 0.85rem;
+        font-weight: 700;
+      }
+
+      .toc-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 0.35rem;
+      }
+
+      .toc-link {
+        display: block;
+        text-decoration: none;
+        color: var(--text-muted);
+        font-size: 0.88rem;
+        padding: 0.5rem 0.75rem;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+        font-weight: 500;
+      }
+
+      .toc-link:hover,
+      .toc-link.active {
+        background: var(--primary-light);
+        color: var(--primary);
+        font-weight: 700;
+      }
+
+      /* Phần nội dung chính */
+      main.content {
+        display: flex;
+        flex-direction: column;
+        gap: 2.5rem;
+        min-width: 0;
+      }
+
+      /* Huy hiệu trạng thái khoa học */
+      .badge-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        font-size: 0.78rem;
+        font-weight: 700;
+        padding: 0.2rem 0.6rem;
+        border-radius: 999px;
+        vertical-align: middle;
+        margin-left: 0.3rem;
+      }
+
+      .badge-established {
+        background: var(--success-light);
+        color: var(--success);
+        border: 1px solid var(--success);
+      }
+
+      .badge-verify {
+        background: var(--accent-light);
+        color: var(--accent);
+        border: 1px solid var(--accent);
+      }
+
+      /* Hero tổng quan & chọn nhanh bài giảng */
+      .overview-box {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-left: 6px solid var(--primary);
+        border-radius: var(--radius);
+        padding: 1.75rem;
+        box-shadow: var(--shadow);
+      }
+
+      .overview-box h1 {
+        font-size: 1.65rem;
+        margin-bottom: 0.65rem;
+        color: var(--text);
+      }
+
+      .prereq-pills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin-top: 1rem;
+      }
+
+      .prereq-pill {
+        background: var(--surface-alt);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 0.65rem 1rem;
+        font-size: 0.9rem;
+        flex: 1 1 250px;
+      }
+
+      /* Khối mỗi Bài Giảng */
+      section.lecture-module {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 2rem;
+        box-shadow: var(--shadow);
+        display: flex;
+        flex-direction: column;
+        gap: 1.6rem;
+        scroll-margin-top: 85px;
+      }
+
+      .lecture-header {
+        border-bottom: 2px solid var(--border);
+        padding-bottom: 1rem;
+      }
+
+      .lecture-tag {
+        display: inline-block;
+        background: var(--primary);
+        color: #fff;
+        font-weight: 800;
+        font-size: 0.82rem;
+        padding: 0.25rem 0.75rem;
+        border-radius: 6px;
+        margin-bottom: 0.5rem;
+        letter-spacing: 0.04em;
+      }
+
+      .lecture-title {
+        font-size: 1.45rem;
+        color: var(--text);
+        line-height: 1.35;
+      }
+
+      /* Hero Câu Chốt của từng bài giảng */
+      .hero-takeaway {
+        background: linear-gradient(
+          135deg,
+          var(--primary-light),
+          var(--surface-alt)
+        );
+        border: 2px solid var(--primary);
+        border-radius: var(--radius);
+        padding: 1.35rem 1.5rem;
+        position: relative;
+      }
+
+      .hero-takeaway-label {
+        font-weight: 800;
+        color: var(--primary);
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        display: block;
+        margin-bottom: 0.35rem;
+      }
+
+      .hero-takeaway-text {
+        font-size: 1.15rem;
+        font-weight: 600;
+        color: var(--text);
+      }
+
+      /* Mở đầu */
+      .intro-box {
+        background: var(--surface-alt);
+        padding: 1.15rem 1.35rem;
+        border-radius: 10px;
+        border-left: 4px solid var(--accent);
+      }
+
+      .section-heading {
+        font-size: 1.08rem;
+        font-weight: 800;
+        margin-bottom: 0.65rem;
+        color: var(--primary);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      /* Các ý chính (Cards hiện dần khi cuộn) */
+      .points-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 1.15rem;
+      }
+
+      .point-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 1.35rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        opacity: 0;
+        transform: translateY(18px);
+        transition:
+          opacity 0.45s ease,
+          transform 0.45s ease;
+      }
+
+      .point-card.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .point-title {
+        font-size: 1.05rem;
+        font-weight: 700;
+        margin-bottom: 0.55rem;
+        color: var(--text);
+      }
+
+      .point-explain {
+        margin-bottom: 0.9rem;
+      }
+
+      .point-boxes {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.85rem;
+      }
+
+      @media (max-width: 700px) {
+        .point-boxes {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .example-box {
+        background: var(--primary-light);
+        border-left: 4px solid var(--primary);
+        padding: 0.85rem 1rem;
+        border-radius: 8px;
+        font-size: 0.92rem;
+      }
+
+      .caveat-box {
+        background: var(--accent-light);
+        border-left: 4px solid var(--accent);
+        padding: 0.85rem 1rem;
+        border-radius: 8px;
+        font-size: 0.92rem;
+      }
+
+      .box-label {
+        font-weight: 800;
+        display: block;
+        margin-bottom: 0.25rem;
+        font-size: 0.82rem;
+        text-transform: uppercase;
+      }
+
+      .example-box .box-label {
+        color: var(--primary);
+      }
+      .caveat-box .box-label {
+        color: var(--accent);
+      }
+
+      /* Khu vực Mô phỏng tương tác */
+      .interactive-lab {
+        background: var(--surface-alt);
+        border: 2px dashed var(--primary);
+        border-radius: var(--radius);
+        padding: 1.5rem;
+        margin: 0.5rem 0;
+      }
+
+      .lab-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .lab-title {
+        font-weight: 800;
+        color: var(--primary);
+        font-size: 1.05rem;
+      }
+
+      .lab-canvas-wrap {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 1.25rem;
+        text-align: center;
+        margin-bottom: 0.85rem;
+      }
+
+      .lab-controls {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-top: 0.85rem;
+      }
+
+      .lab-disclaimer {
+        font-size: 0.82rem;
+        color: var(--text-muted);
+        font-style: italic;
+        text-align: center;
+        margin-top: 0.5rem;
+      }
+
+      /* Bảng tóm tắt */
+      .table-wrap {
+        overflow-x: auto;
+      }
+
+      table.summary-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.92rem;
+        background: var(--surface);
+        border-radius: 10px;
+        overflow: hidden;
+        border: 1px solid var(--border);
+      }
+
+      table.summary-table th,
+      table.summary-table td {
+        padding: 0.8rem 1rem;
+        text-align: left;
+        border-bottom: 1px solid var(--border);
+      }
+
+      table.summary-table th {
+        background: var(--surface-alt);
+        font-weight: 700;
+        color: var(--primary);
+      }
+
+      /* Hiểu lầm thường gặp (Thẻ bấm mở/lật) */
+      .myth-card {
+        background: var(--surface-alt);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        overflow: hidden;
+      }
+
+      .myth-header {
+        width: 100%;
+        text-align: left;
+        background: none;
+        border: none;
+        padding: 1rem 1.25rem;
+        font-size: 0.98rem;
+        font-weight: 700;
+        color: var(--danger);
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .myth-header:hover {
+        background: var(--danger-light);
+      }
+
+      .myth-body {
+        display: none;
+        padding: 1rem 1.25rem;
+        border-top: 1px solid var(--border);
+        background: var(--surface);
+        color: var(--text);
+      }
+
+      .myth-card.open .myth-body {
+        display: block;
+      }
+
+      /* Khung Tóm lại 3 dòng nổi bật */
+      .summary-3lines {
+        background: linear-gradient(
+          135deg,
+          var(--surface-alt),
+          var(--primary-light)
+        );
+        border: 2px solid var(--primary);
+        border-radius: var(--radius);
+        padding: 1.35rem 1.5rem;
+      }
+
+      .summary-3lines ul {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 0.55rem;
+      }
+
+      .summary-3lines li {
+        position: relative;
+        padding-left: 1.6rem;
+        font-weight: 600;
+      }
+
+      .summary-3lines li::before {
+        content: "✔";
+        position: absolute;
+        left: 0;
+        color: var(--primary);
+        font-weight: 900;
+      }
+
+      /* Câu hỏi kiểm tra trắc nghiệm */
+      .quiz-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+      }
+
+      @media (max-width: 768px) {
+        .quiz-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .quiz-box {
+        background: var(--surface-alt);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 1.15rem;
+      }
+
+      .quiz-q {
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+        font-size: 0.95rem;
+      }
+
+      .quiz-options {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .quiz-opt {
+        text-align: left;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        color: var(--text);
+        padding: 0.6rem 0.85rem;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: all 0.15s ease;
+      }
+
+      .quiz-opt:hover {
+        border-color: var(--primary);
+      }
+
+      .quiz-opt.correct {
+        background: var(--success-light);
+        border-color: var(--success);
+        color: var(--success);
+        font-weight: 700;
+      }
+
+      .quiz-opt.wrong {
+        background: var(--danger-light);
+        border-color: var(--danger);
+        color: var(--danger);
+      }
+
+      .quiz-feedback {
+        margin-top: 0.65rem;
+        font-size: 0.88rem;
+        display: none;
+        padding: 0.6rem;
+        border-radius: 6px;
+      }
+
+      /* Nguồn & độ chắc chắn */
+      .source-box {
+        background: var(--surface-alt);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 1.1rem 1.25rem;
+        font-size: 0.88rem;
+      }
+
+      .source-box a {
+        color: var(--primary);
+        word-break: break-all;
+      }
+
+      input[type="range"] {
+        accent-color: var(--primary);
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Thanh tiến độ đọc -->
+    <div id="progress-container">
+      <div id="progress-bar"></div>
+    </div>
+
+    <!-- Thanh công cụ trên cùng -->
+    <header class="top-bar">
+      <div class="brand">
+        <span class="brand-badge">QBIT</span>
+        <span
+          >Hệ Thống 8 Bài Giảng Quang Học Lượng Tử Phi Tuyến ([26] – [39])</span
+        >
+      </div>
+      <div class="controls">
+        <button
+          class="btn"
+          id="btn-presentation"
+          onclick="togglePresentation()"
+        >
+          🖥️ Chế độ trình chiếu: TẮT
+        </button>
+        <button class="btn" id="btn-theme" onclick="toggleTheme()">
+          🌙 Giao diện Tối
+        </button>
+      </div>
+    </header>
+
+    <div class="layout">
+      <!-- Thanh mục lục cố định -->
+      <aside class="sidebar">
+        <div class="sidebar-title">Mục Lục Bài Giảng</div>
+        <ul class="toc-list">
+          <li>
+            <a href="#nen-tang" class="toc-link active"
+              >0. Kiến thức nền & Tổng quan</a
+            >
+          </li>
+          <li>
+            <a href="#bai-1" class="toc-link"
+              >Bài 1: Vấn đề [26] – Đan rối & Kerr</a
+            >
+          </li>
+          <li>
+            <a href="#bai-2" class="toc-link"
+              >Bài 2: Vấn đề [27] – Chắn photon</a
+            >
+          </li>
+          <li>
+            <a href="#bai-3" class="toc-link"
+              >Bài 3: Vấn đề [32] – Giao thoa kế MZI</a
+            >
+          </li>
+          <li>
+            <a href="#bai-4" class="toc-link"
+              >Bài 4: Vấn đề [33] – Bộ liên kết xung</a
+            >
+          </li>
+          <li>
+            <a href="#bai-5" class="toc-link"
+              >Bài 5: Gộp [34] & [35] – Exciton/Biexciton</a
+            >
+          </li>
+          <li>
+            <a href="#bai-6" class="toc-link"
+              >Bài 6: Vấn đề [36] – Kết hợp bộ ba</a
+            >
+          </li>
+          <li>
+            <a href="#bai-7" class="toc-link"
+              >Bài 7: Gộp [37] & [38] – Nén tổng & hiệu</a
+            >
+          </li>
+          <li>
+            <a href="#bai-8" class="toc-link"
+              >Bài 8: Vấn đề [39] – Rối photon 2 mode</a
+            >
+          </li>
+        </ul>
+      </aside>
+
+      <!-- Nội dung chính -->
+      <main class="content">
+        <!-- Khối Kiến thức nền -->
+        <div id="nen-tang" class="overview-box">
+          <h1>Bức Tranh Tổng Quan & Kiến Thức Nền Cho Người Mới</h1>
+          <p>
+            Đoạn trích từ tài liệu của bạn gồm
+            <strong>10 vấn đề nghiên cứu ([26], [27], [32]–[39])</strong> được
+            chia thành <strong>8 bài giảng độc lập</strong> (chỉ gộp cặp
+            <strong>[34]–[35]</strong> vì cùng về chuẩn hạt bán dẫn và cặp
+            <strong>[37]–[38]</strong> vì cùng là phép nén đa kênh). Trước khi
+            bắt đầu giảng từng số, hãy nhắc nhóm 3 khái niệm nền tảng sau:
+          </p>
+          <div class="prereq-pills">
+            <div class="prereq-pill">
+              <strong>1. Photon (Hạt ánh sáng):</strong> Gói năng lượng nhỏ nhất
+              của ánh sáng. Ở điều kiện thường, hai tia sáng chiếu qua nhau sẽ
+              đi xuyên qua nhau mà không hề tương tác
+              <span class="badge-status badge-established">[Đã xác lập]</span>.
+            </div>
+            <div class="prereq-pill">
+              <strong>2. Phi tuyến (Nonlinearity):</strong> Khi ánh sáng mạnh đi
+              vào vật liệu đặc biệt, nó làm thay đổi tính chất vật liệu đó, từ
+              đó giúp các hạt photon gián tiếp "tác động" lên nhau
+              <span class="badge-status badge-established">[Đã xác lập]</span>.
+            </div>
+            <div class="prereq-pill">
+              <strong>3. Lưu ý kiểm chứng trích dẫn:</strong> Bản chất vật lý
+              của cả 10 số đều đã xác lập, nhưng tên tác giả cụ thể của từng số
+              [26]–[39] trong tài liệu gốc của bạn cần đối chiếu với trang
+              References cuối văn bản
+              <span class="badge-status badge-verify"
+                >[Cần kiểm chứng danh mục gốc]</span
+              >.
+            </div>
+          </div>
+        </div>
+
+        <!-- =========================================================
+           BÀI GIẢNG 1: VẤN ĐỀ [26]
+      ========================================================== -->
+        <section id="bai-1" class="lecture-module">
+          <div class="lecture-header">
+            <span class="lecture-tag">BÀI GIẢNG 1 • VẤN ĐỀ [26]</span>
+            <h2 class="lecture-title">
+              Tăng cường đan rối bằng phi tuyến Kerr & từ trường không đẳng
+              hướng
+            </h2>
+          </div>
+
+          <div class="hero-takeaway">
+            <span class="hero-takeaway-label">🎯 Câu chốt cần nhớ</span>
+            <div class="hero-takeaway-text">
+              Bằng cách kết hợp môi trường
+              <strong>phi tuyến Kerr (Kerr nonlinearity)</strong> với một
+              <strong
+                >từ trường không đẳng hướng (anisotropic magnetic field)</strong
+              >, ta có thể làm cho mối liên kết
+              <strong>đan rối lượng tử (quantum entanglement)</strong> giữa các
+              hạt bền chặt hơn
+              <span class="badge-status badge-established">[Đã xác lập]</span>.
+            </div>
+          </div>
+
+          <div class="intro-box">
+            <div class="section-heading">1. Mở đầu: Vì sao cần biết?</div>
+            <p>
+              Làm sao để hai hạt lượng tử ở cách xa nhau vẫn "hiểu ý" nhau để
+              truyền thông tin lượng tử? Chúng cần sự <strong>đan rối</strong>,
+              nhưng mối liên kết này rất mong manh và dễ đứt gãy; vấn đề
+              <strong>[26]</strong> giải quyết bài toán làm sao "gia cố" cho mối
+              liên kết này mạnh lên
+              <span class="badge-status badge-established">[Đã xác lập]</span>.
+            </p>
+          </div>
+
+          <div>
+            <div class="section-heading">2. Nội dung chính</div>
+            <div class="points-grid">
+              <div class="point-card">
+                <div class="point-title">
+                  Ý 1: Đan rối lượng tử (Quantum entanglement) – Mối liên kết vô
+                  hình
+                </div>
+                <p class="point-explain">
+                  Là hiện tượng hai hay nhiều hạt lượng tử gắn kết với nhau chặt
+                  chẽ đến mức khi ta đo đạc hạt này, trạng thái của hạt kia lập
+                  tức được xác định theo, dù chúng ở cách xa nhau
+                  <span class="badge-status badge-established"
+                    >[Đã xác lập]</span
+                  >.
+                </p>
+                <div class="point-boxes">
+                  <div class="example-box">
+                    <span class="box-label">💡 Ví dụ đời thường</span>
+                    Giống như một đôi giày bỏ vào hai hộp kín gửi đi hai nơi; mở
+                    hộp đầu thấy chiếc bên trái thì biết ngay hộp kia là chiếc
+                    bên phải.
+                  </div>
+                  <div class="caveat-box">
+                    <span class="box-label"
+                      >⚠️ Lưu ý: Chỗ ví dụ chưa chính xác</span
+                    >
+                    Đôi giày đã định sẵn trái/phải từ lúc bỏ vào hộp, còn các
+                    hạt đan rối thì ở trạng thái chồng chập (chưa định sẵn kết
+                    quả) cho đến tận khoảnh khắc một hạt bị đo
+                    <span class="badge-status badge-established"
+                      >[Đã xác lập]</span
+                    >.
+                  </div>
+                </div>
+              </div>
+
+              <div class="point-card">
+                <div class="point-title">
+                  Ý 2: Hiệu ứng phi tuyến Kerr (Kerr nonlinearity) – Cầu nối
+                  tương tác
+                </div>
+                <p class="point-explain">
+                  Là hiện tượng khi ánh sáng đi qua một tinh thể đặc biệt, cường
+                  độ ánh sáng làm thay đổi tốc độ truyền sáng của tinh thể đó.
+                  Nhờ vậy, các hạt ánh sáng đi qua đây có thể tác động lẫn nhau
+                  để tạo ra sự đan rối
+                  <span class="badge-status badge-established"
+                    >[Đã xác lập]</span
+                  >.
+                </p>
+                <div class="point-boxes">
+                  <div class="example-box">
+                    <span class="box-label">💡 Ví dụ đời thường</span>
+                    Giống như hai người cùng đi trên một tấm đệm lò xo: bước
+                    chân người này làm lún đệm và tác động sang người kia.
+                  </div>
+                  <div class="caveat-box">
+                    <span class="box-label"
+                      >⚠️ Lưu ý: Chỗ ví dụ chưa chính xác</span
+                    >
+                    Đệm lò xo biến dạng cơ học trong không gian, còn hiệu ứng
+                    Kerr làm biến đổi tính chất điện từ (chiết suất) của vật
+                    liệu ở cấp độ nguyên tử.
+                  </div>
+                </div>
+              </div>
+
+              <div class="point-card">
+                <div class="point-title">
+                  Ý 3: Tính không đẳng hướng của từ trường tinh thể (Crystal
+                  magnetic field anisotropy)
+                </div>
+                <p class="point-explain">
+                  <strong>Không đẳng hướng (anisotropy)</strong> nghĩa là lực từ
+                  bên trong tinh thể mạnh yếu khác nhau tùy theo hướng (chiều
+                  dọc khác chiều ngang). Vấn đề <strong>[26]</strong> chỉ ra
+                  rằng nếu điều chỉnh đúng hướng từ trường này kết hợp với hiệu
+                  ứng Kerr, độ đan rối sẽ được khuếch đại mạnh hơn
+                  <span class="badge-status badge-established"
+                    >[Đã xác lập]</span
+                  >.
+                </p>
+                <div class="point-boxes">
+                  <div class="example-box">
+                    <span class="box-label">💡 Ví dụ đời thường</span>
+                    Giống như chẻ củi theo đúng chiều thớ gỗ sẽ dễ và hiệu quả
+                    hơn rất nhiều so với bổ ngang thớ gỗ.
+                  </div>
+                  <div class="caveat-box">
+                    <span class="box-label"
+                      >⚠️ Lưu ý: Chỗ ví dụ chưa chính xác</span
+                    >
+                    Thớ gỗ là cấu trúc sợi thực vật vĩ mô, còn tính không đẳng
+                    hướng trong tinh thể là sự sắp xếp bất đối xứng của mạng
+                    nguyên tử và spin điện tử.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <div class="section-heading">3. Sơ đồ tóm tắt</div>
+            <table class="summary-table">
+              <thead>
+                <tr>
+                  <th>Đầu vào</th>
+                  <th>Môi trường tương tác [26]</th>
+                  <th>Kết quả đầu ra</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Các hạt lượng tử rời rạc</td>
+                  <td>
+                    Môi trường <strong>Phi tuyến Kerr</strong> +
+                    <strong>Từ trường không đẳng hướng</strong> (định hướng tối
+                    ưu)
+                  </td>
+                  <td>
+                    Trạng thái <strong>Đan rối lượng tử</strong> được tăng cường
+                    bền chặt hơn
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div>
+            <div class="section-heading">
+              4. Hiểu lầm thường gặp (Bấm vào thẻ để xem sự thật)
+            </div>
+            <div class="myth-card" onclick="this.classList.toggle('open')">
+              <button class="myth-header">
+                <span
+                  >❌ Nhiều người nghĩ: Đan rối lượng tử giúp gửi tin nhắn nhanh
+                  hơn vận tốc ánh sáng.</span
+                >
+                <span>▼ Bấm mở</span>
+              </button>
+              <div class="myth-body">
+                <strong>✅ Thực ra:</strong> Phép đo trên hạt đầu tiên cho kết
+                quả ngẫu nhiên, nên người ở hạt thứ hai không thể nhận được
+                thông điệp có nghĩa nếu không có một kênh liên lạc cổ điển đi
+                kèm
+                <span class="badge-status badge-established">[Đã xác lập]</span
+                >.
+              </div>
+            </div>
+          </div>
+
+          <div class="summary-3lines">
+            <div class="section-heading">5. Tóm lại trong 3 dòng</div>
+            <ul>
+              <li>
+                <strong>Đan rối lượng tử</strong> là mối liên kết sống còn giữa
+                các qubit, nhưng rất dễ suy yếu.
+              </li>
+              <li>
+                <strong>Phi tuyến Kerr</strong> giúp các hạt tương tác với nhau
+                để sinh ra đan rối.
+              </li>
+              <li>
+                Kết hợp thêm
+                <strong>tính không đẳng hướng của từ trường tinh thể</strong>
+                giúp tăng cường và giữ mối đan rối đó mạnh hơn.
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <div class="section-heading">6. Kiểm tra người nghe</div>
+            <div class="quiz-grid">
+              <div class="quiz-box">
+                <div class="quiz-q">
+                  Câu 1: Tính "không đẳng hướng" trong vấn đề [26] có nghĩa là
+                  gì?
+                </div>
+                <div class="quiz-options">
+                  <button
+                    class="quiz-opt"
+                    onclick="
+                      checkQuiz(
+                        this,
+                        true,
+                        'Chính xác! Không đẳng hướng (anisotropy) nghĩa là tính chất vật lý phụ thuộc vào phương hướng.',
+                      )
+                    "
+                  >
+                    A. Từ trường tinh thể mạnh/yếu khác nhau tùy theo phương
+                    hướng.
+                  </button>
+                  <button
+                    class="quiz-opt"
+                    onclick="
+                      checkQuiz(
+                        this,
+                        false,
+                        'Chưa đúng. Mọi hướng giống hệt nhau gọi là Đẳng hướng (isotropic).',
+                      )
+                    "
+                  >
+                    B. Từ trường tinh thể giống hệt nhau theo mọi hướng.
+                  </button>
+                </div>
+                <div class="quiz-feedback"></div>
+              </div>
+              <div class="quiz-box">
+                <div class="quiz-q">
+                  Câu 2: Tại sao cần hiệu ứng phi tuyến Kerr để tạo đan rối cho
+                  ánh sáng?
+                </div>
+                <div class="quiz-options">
+                  <button
+                    class="quiz-opt"
+                    onclick="
+                      checkQuiz(
+                        this,
+                        false,
+                        'Chưa đúng. Mục đích chính là tạo tương tác giữa các hạt.',
+                      )
+                    "
+                  >
+                    A. Để làm cho các hạt ánh sáng bay nhanh hơn vận tốc ánh
+                    sáng.
+                  </button>
+                  <button
+                    class="quiz-opt"
+                    onclick="
+                      checkQuiz(
+                        this,
+                        true,
+                        'Chính xác! Bình thường photon đi xuyên qua nhau, cần môi trường Kerr làm trung gian tương tác.',
+                      )
+                    "
+                  >
+                    B. Vì bình thường ánh sáng đi xuyên qua nhau không tương
+                    tác, cần môi trường Kerr làm trung gian.
+                  </button>
+                </div>
+                <div class="quiz-feedback"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="source-box secondary-detail">
+            <div class="section-heading">7. Nguồn & Độ chắc chắn</div>
+            <p>
+              <strong
+                >• Nguồn (Sách giáo trình chuẩn – dễ đọc cho người mới):</strong
+              >
+              Gerry, C., & Knight, P. (2004).
+              <em>Introductory Quantum Optics</em>. Cambridge University Press.
+              DOI:
+              <a
+                href="https://doi.org/10.1017/CBO9780511791239"
+                target="_blank"
+                rel="noopener"
+                >10.1017/CBO9780511791239</a
+              >.
+            </p>
+            <p>
+              <strong>• Độ chắc chắn:</strong> Khái niệm đan rối, hiệu ứng Kerr
+              và tính không đẳng hướng là
+              <span class="badge-status badge-established">[Đã xác lập]</span>.
+              Tên tác giả cụ thể của trích dẫn số <code>[26]</code> trong tài
+              liệu gốc của bạn cần đối chiếu thêm vì chưa có trang Danh mục tài
+              liệu tham khảo
+              <span class="badge-status badge-verify">[Cần kiểm chứng]</span>.
+            </p>
+          </div>
+        </section>
+
+        <!-- =========================================================
+           BÀI GIẢNG 2: VẤN ĐỀ [27] + MÔ PHỎNG TƯƠNG TÁC 1
+      ========================================================== -->
+        <section id="bai-2" class="lecture-module">
+          <div class="lecture-header">
+            <span class="lecture-tag">BÀI GIẢNG 2 • VẤN ĐỀ [27]</span>
+            <h2 class="lecture-title">
+              Hiệu ứng chắn photon (Photon Blockade) trong hệ cộng hưởng
+            </h2>
+          </div>
+
+          <div class="hero-takeaway">
+            <span class="hero-takeaway-label">🎯 Câu chốt cần nhớ</span>
+            <div class="hero-takeaway-text">
+              <strong>Hiệu ứng chắn photon (photon blockade)</strong> là cơ chế
+              dùng sự tương tác cực mạnh giữa nguyên tử và ánh sáng trong một
+              buồng giam siêu nhỏ để ép dòng ánh sáng chỉ được đi qua từng hạt
+              một
+              <span class="badge-status badge-established">[Đã xác lập]</span>.
+            </div>
+          </div>
+
+          <div class="intro-box">
+            <div class="section-heading">1. Mở đầu: Vì sao cần biết?</div>
+            <p>
+              Để chế tạo máy tính hay mạng truyền thông lượng tử bằng ánh sáng,
+              ta cần những "khẩu súng" bắn ra chính xác từng hạt
+              <strong>photon</strong> một chứ không được bắn chùm hỗn loạn. Làm
+              sao tách riêng từng hạt ánh sáng? Vấn đề
+              <strong>[27]</strong> dùng
+              <strong>hiệu ứng chắn photon</strong> để giải quyết việc này
+              <span class="badge-status badge-established">[Đã xác lập]</span>.
+            </p>
+          </div>
+
+          <div>
+            <div class="section-heading">2. Nội dung chính</div>
+            <div class="points-grid">
+              <div class="point-card">
+                <div class="point-title">
+                  Ý 1: Hệ cộng hưởng (Resonator/Cavity) – Chiếc lồng nhốt ánh
+                  sáng
+                </div>
+                <p class="point-explain">
+                  Là một buồng siêu nhỏ có các mặt gương phản xạ cực tốt, dùng
+                  để giữ hạt ánh sáng nảy qua nảy lại bên trong nhiều lần thay
+                  vì bay mất ngay
+                  <span class="badge-status badge-established"
+                    >[Đã xác lập]</span
+                  >.
+                </p>
+                <div class="point-boxes">
+                  <div class="example-box">
+                    <span class="box-label">💡 Ví dụ đời thường</span>
+                    Giống như một căn phòng lắp gương đối diện nhau khiến hình
+                    ảnh phản chiếu lặp lại liên tục.
+                  </div>
+                  <div class="caveat-box">
+                    <span class="box-label"
+                      >⚠️ Lưu ý: Chỗ ví dụ chưa chính xác</span
+                    >
+                    Phòng gương đời thường làm ánh sáng yếu đi rất nhanh do hấp
+                    thụ nhiệt, còn hệ cộng hưởng lượng tử được chế tạo ở kích
+                    thước vi mô để giữ sóng ánh sáng ở một tần số cố định.
+                  </div>
+                </div>
+              </div>
+
+              <div class="point-card">
+                <div class="point-title">
+                  Ý 2: Kết nối mạnh (Strong coupling) giữa nguyên tử và trường
+                </div>
+                <p class="point-explain">
+                  Khi đặt một nguyên tử vào trong buồng cộng hưởng trên, hạt ánh
+                  sáng (<strong>trường</strong>) và nguyên tử trao đổi năng
+                  lượng với nhau nhanh hơn tốc độ ánh sáng thất thoát ra ngoài —
+                  đó gọi là <strong>kết nối mạnh</strong>
+                  <span class="badge-status badge-established"
+                    >[Đã xác lập]</span
+                  >.
+                </p>
+                <div class="point-boxes">
+                  <div class="example-box">
+                    <span class="box-label">💡 Ví dụ đời thường</span>
+                    Hai người đứng trong phòng kín ném bóng qua lại cho nhau
+                    liên tục trước khi quả bóng kịp lăn ra cửa.
+                  </div>
+                  <div class="caveat-box">
+                    <span class="box-label"
+                      >⚠️ Lưu ý: Chỗ ví dụ chưa chính xác</span
+                    >
+                    Quả bóng là vật thể tách rời với người ném, còn trong kết
+                    nối mạnh, nguyên tử và photon hòa trộn trạng thái lượng tử
+                    với nhau.
+                  </div>
+                </div>
+              </div>
+
+              <div class="point-card">
+                <div class="point-title">
+                  Ý 3: Chắn photon (Photon blockade) – Hạt đi trước chặn cửa hạt
+                  đi sau
+                </div>
+                <p class="point-explain">
+                  Trong các mô hình
+                  <strong
+                    >kéo lượng tử phi tuyến (nonlinear quantum
+                    pulling/driving)</strong
+                  >
+                  ở trạng thái kết nối mạnh, ngay khi hạt photon thứ nhất đi vào
+                  buồng và kết hợp với nguyên tử, nó làm lệch mức năng lượng của
+                  toàn bộ cái buồng. Hạt photon thứ hai bay tới thấy "lệch tần
+                  số" nên bị dội ngược ra, phải chờ hạt thứ nhất đi ra mới được
+                  vào
+                  <span class="badge-status badge-established"
+                    >[Đã xác lập]</span
+                  >.
+                </p>
+                <div class="point-boxes">
+                  <div class="example-box">
+                    <span class="box-label">💡 Ví dụ đời thường</span>
+                    Giống cửa xoay siêu thị chỉ vừa đúng 1 người: người thứ nhất
+                    bước vào làm khóa chốt cửa, người thứ hai phải đợi người đầu
+                    bước ra mới vào được.
+                  </div>
+                  <div class="caveat-box">
+                    <span class="box-label"
+                      >⚠️ Lưu ý: Chỗ ví dụ chưa chính xác</span
+                    >
+                    Cửa xoay chặn bằng thanh sắt cơ học, còn chắn photon chặn
+                    bằng sự lệch pha năng lượng (không khớp tần số cộng hưởng).
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- MÔ PHỎNG TƯƠNG TÁC 1: CHẮN PHOTON [27] -->
+          <div class="interactive-lab">
+            <div class="lab-header">
+              <span class="lab-title"
+                >🔬 Mô phỏng tương tác [27]: Buồng cộng hưởng Chắn Photon
+                (Photon Blockade)</span
+              >
+              <span class="badge-status badge-established"
+                >Tương tác trực tiếp</span
+              >
+            </div>
+            <div class="lab-canvas-wrap">
+              <svg
+                id="svg-blockade"
+                viewBox="0 0 650 200"
+                width="100%"
+                height="200"
+              >
+                <!-- Gương trái và phải của hệ cộng hưởng -->
+                <path
+                  d="M 220 30 Q 245 100 220 170 L 210 170 Q 235 100 210 30 Z"
+                  fill="#0f766e"
+                />
+                <path
+                  d="M 430 30 Q 405 100 430 170 L 440 170 Q 415 100 440 30 Z"
+                  fill="#0f766e"
+                />
+                <text
+                  x="325"
+                  y="25"
+                  text-anchor="middle"
+                  font-size="13"
+                  font-weight="bold"
+                  fill="currentColor"
+                >
+                  Hệ cộng hưởng (Cavity) + Nguyên tử
+                </text>
+
+                <!-- Nguyên tử ở giữa -->
+                <circle
+                  id="atom-core"
+                  cx="325"
+                  cy="100"
+                  r="18"
+                  fill="#d97706"
+                />
+                <text
+                  x="325"
+                  y="105"
+                  text-anchor="middle"
+                  font-size="11"
+                  fill="#fff"
+                  font-weight="bold"
+                >
+                  Atom
+                </text>
+
+                <!-- Trạng thái mức năng lượng -->
+                <text
+                  id="cavity-status-text"
+                  x="325"
+                  y="160"
+                  text-anchor="middle"
+                  font-size="13"
+                  font-weight="bold"
+                  fill="#16a34a"
+                >
+                  Trạng thái: Đang trống (0 photon) — Khớp tần số cộng hưởng!
+                </text>
+
+                <!-- Photon 1 (bên trong hoặc bay vào) -->
+                <g id="photon-1" style="display: none">
+                  <circle cx="280" cy="100" r="12" fill="#eab308" />
+                  <text
+                    x="280"
+                    y="104"
+                    text-anchor="middle"
+                    font-size="11"
+                    font-weight="bold"
+                    fill="#000"
+                  >
+                    γ₁
+                  </text>
+                </g>
+
+                <!-- Photon 2 bị chặn dội ra -->
+                <g id="photon-2-blocked" style="display: none">
+                  <circle cx="155" cy="100" r="12" fill="#ef4444" />
+                  <text
+                    x="155"
+                    y="104"
+                    text-anchor="middle"
+                    font-size="11"
+                    font-weight="bold"
+                    fill="#fff"
+                  >
+                    γ₂
+                  </text>
+                  <path
+                    d="M 195 100 L 175 100 L 182 93 M 175 100 L 182 107"
+                    stroke="#ef4444"
+                    stroke-width="3"
+                    fill="none"
+                  />
+                  <text
+                    x="115"
+                    y="75"
+                    text-anchor="middle"
+                    font-size="12"
+                    font-weight="bold"
+                    fill="#ef4444"
+                  >
+                    Bị dội ra! (Lệch mức năng lượng)
+                  </text>
+                </g>
+
+                <!-- Photon thoát ra từng hạt bên phải -->
+                <g id="photon-emitted" style="display: none">
+                  <circle cx="530" cy="100" r="12" fill="#16a34a" />
+                  <text
+                    x="530"
+                    y="104"
+                    text-anchor="middle"
+                    font-size="11"
+                    font-weight="bold"
+                    fill="#fff"
+                  >
+                    γ₁
+                  </text>
+                  <text
+                    x="530"
+                    y="135"
+                    text-anchor="middle"
+                    font-size="12"
+                    font-weight="bold"
+                    fill="#16a34a"
+                  >
+                    Phát ra đơn photon!
+                  </text>
+                </g>
+              </svg>
+
+              <div class="lab-controls">
+                <button class="btn active" onclick="simBlockadeSend()">
+                  1. Bắn Photon vào buồng
+                </button>
+                <button class="btn" onclick="simBlockadeRelease()">
+                  2. Cho Photon trong buồng thoát ra
+                </button>
+              </div>
+            </div>
+            <p class="lab-disclaimer">
+              *Ghi chú khoa học: Hình minh họa đơn giản hóa sự dịch chuyển mức
+              năng lượng phi điều hòa (anharmonicity) trong mô hình
+              Jaynes-Cummings thành tín hiệu khóa/mở trực quan.
+            </p>
+          </div>
+
+          <div class="table-wrap">
+            <div class="section-heading">3. Bảng tóm tắt</div>
+            <table class="summary-table">
+              <thead>
+                <tr>
+                  <th>Trạng thái buồng cộng hưởng</th>
+                  <th>Điều gì xảy ra khi Photon bay tới?</th>
+                  <th>Kết quả đầu ra</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Đang trống (0 photon)</strong></td>
+                  <td>
+                    Khớp mức năng lượng ➔ Cho phép <strong>1 photon</strong> đi
+                    vào
+                  </td>
+                  <td>Đón nhận hạt thứ 1</td>
+                </tr>
+                <tr>
+                  <td><strong>Đã có 1 photon bên trong</strong></td>
+                  <td>
+                    Mức năng lượng bị lệch đi ➔ <strong>Chặn</strong> photon thứ
+                    2 ở ngoài
+                  </td>
+                  <td>Tạo dòng <strong>đơn photon</strong> (từng hạt một)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div>
+            <div class="section-heading">4. Hiểu lầm thường gặp</div>
+            <div class="myth-card" onclick="this.classList.toggle('open')">
+              <button class="myth-header">
+                <span
+                  >❌ Nhiều người nghĩ: "Chắn photon" là dựng một bức tường tối
+                  đen cản không cho ánh sáng đi qua.</span
+                >
+                <span>▼ Bấm mở</span>
+              </button>
+              <div class="myth-body">
+                <strong>✅ Thực ra:</strong> Ánh sáng vẫn đi qua được, nhưng bị
+                điều tiết để đi qua <strong>từng hạt một</strong> theo hàng lối
+                thay vì đi thành chùm
+                <span class="badge-status badge-established">[Đã xác lập]</span
+                >.
+              </div>
+            </div>
+          </div>
+
+          <div class="summary-3lines">
+            <div class="section-heading">5. Tóm lại trong 3 dòng</div>
+            <ul>
+              <li>
+                Nhốt một nguyên tử và ánh sáng vào
+                <strong>hệ cộng hưởng</strong> để tạo ra sự
+                <strong>kết nối mạnh</strong>.
+              </li>
+              <li>
+                Hạt photon đầu tiên đi vào sẽ làm thay đổi mức năng lượng của
+                hệ, chặn không cho hạt thứ hai vào cùng lúc (<strong
+                  >chắn photon</strong
+                >).
+              </li>
+              <li>
+                Đây là chìa khóa để chế tạo nguồn phát
+                <strong>đơn photon</strong> cho công nghệ lượng tử.
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <div class="section-heading">6. Kiểm tra người nghe</div>
+            <div class="quiz-grid">
+              <div class="quiz-box">
+                <div class="quiz-q">
+                  Câu 1: Điều kiện quan trọng nhất giữa nguyên tử và trường ánh
+                  sáng để nhìn rõ hiệu ứng chắn photon ở mục [27] là gì?
+                </div>
+                <div class="quiz-options">
+                  <button
+                    class="quiz-opt"
+                    onclick="
+                      checkQuiz(
+                        this,
+                        true,
+                        'Chính xác! Phải có sự kết nối mạnh (strong coupling) trong hệ cộng hưởng.',
+                      )
+                    "
+                  >
+                    A. Phải có sự kết nối mạnh (strong coupling) trong hệ cộng
+                    hưởng.
+                  </button>
+                  <button
+                    class="quiz-opt"
+                    onclick="
+                      checkQuiz(
+                        this,
+                        false,
+                        'Chưa đúng. Nếu không tương tác với nguyên tử thì không làm lệch mức năng lượng được.',
+                      )
+                    "
+                  >
+                    B. Nguyên tử và ánh sáng không được tương tác với nhau.
+                  </button>
+                </div>
+                <div class="quiz-feedback"></div>
+              </div>
+              <div class="quiz-box">
+                <div class="quiz-q">
+                  Câu 2: Tại sao photon thứ hai không thể đi vào buồng khi đã có
+                  photon thứ nhất ở trong?
+                </div>
+                <div class="quiz-options">
+                  <button
+                    class="quiz-opt"
+                    onclick="
+                      checkQuiz(
+                        this,
+                        false,
+                        'Chưa đúng. Photon không chiếm chỗ cơ học như viên bi.',
+                      )
+                    "
+                  >
+                    A. Vì buồng quá chật không còn chỗ trống vật lý.
+                  </button>
+                  <button
+                    class="quiz-opt"
+                    onclick="
+                      checkQuiz(
+                        this,
+                        true,
+                        'Chính xác! Photon thứ nhất làm lệch mức năng lượng cộng hưởng của hệ.',
+                      )
+                    "
+                  >
+                    B. Vì photon thứ nhất làm thay đổi mức năng lượng cộng hưởng
+                    của hệ, khiến hạt thứ hai lệch tần số.
+                  </button>
+                </div>
+                <div class="quiz-feedback"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="source-box secondary-detail">
+            <div class="section-heading">7. Nguồn & Độ chắc chắn</div>
+            <p>
+              <strong>• Nguồn (Bài báo bình duyệt kinh điển):</strong> Birnbaum,
+              K. M., et al. (2005). "Photon blockade in an optical cavity with
+              one trapped atom". <em>Nature</em>, 436(7047), 87–90. DOI:
+              <a
+                href="https://doi.org/10.1038/nature03804"
+                target="_blank"
+                rel="noopener"
+                >10.1038/nature03804</a
+              >.
+            </p>
+            <p>
+              <strong>• Độ chắc chắn:</strong> Cơ chế chắn photon và kết nối
+              mạnh là
+              <span class="badge-status badge-established">[Đã xác lập]</span>.
+              Bài báo cụ thể ứng với số <code>[27]</code> trong tài liệu của bạn
+              cần đối chiếu với danh mục tài liệu tham khảo gốc
+              <span class="badge-status badge-verify">[Cần kiểm chứng]</span>.
+            </p>
+          </div>
+        </section>
+
+        <!-- =========================================================
+           BÀI GIẢNG 3: VẤN ĐỀ [32]
+      ========================================================== -->
+        <section id="bai-3" class="lecture-module">
+          <div class="lecture-header">
+            <span class="lecture-tag">BÀI GIẢNG 3 • VẤN ĐỀ [32]</span>
+            <h2 class="lecture-title">
+              Giao thoa kế Mach-Zehnder sợi quang phi tuyến
+            </h2>
+          </div>
+
+          <div class="hero-takeaway">
+            <span class="hero-takeaway-label">🎯 Câu chốt cần nhớ</span>
+            <div class="hero-takeaway-text">
+              <strong
+                >Giao thoa kế Mach-Zehnder sợi quang phi tuyến (nonlinear fiber
+                Mach-Zehnder interferometer)</strong
+              >
+              là thiết bị tách ánh sáng thành hai đường sợi quang có tính phi
+              tuyến rồi gộp lại để đo lường siêu nhạy hoặc làm công tắc điều
+              khiển qubit ánh sáng
+              <span class="badge-status badge-established">[Đã xác lập]</span>.
+            </div>
+          </div>
+
+          <div class="intro-box">
+            <div class="section-heading">1. Mở đầu: Vì sao cần biết?</div>
+            <p>
+              Khi đã có các hạt ánh sáng mang thông tin lượng tử, làm sao ta đo
+              được những biến đổi cực nhỏ của chúng hoặc điều khiển chúng
+              bật/tắt như mạch điện tử? Vấn đề <strong>[32]</strong> nghiên cứu
+              một thiết bị phần cứng cốt lõi làm nhiệm vụ đó:
+              <strong>Giao thoa kế Mach-Zehnder</strong> dùng sợi quang phi
+              tuyến
+              <span class="badge-status badge-established">[Đã xác lập]</span>.
+            </p>
+          </div>
+
+          <div>
+            <div class="section-heading">2. Nội dung chính</div>
+            <div class="points-grid">
+              <div class="point-card">
+                <div class="point-title">
+                  Ý 1: Hiện tượng giao thoa (Interference) – Sóng gặp sóng
+                </div>
+                <p class="point-explain">
+                  Ánh sáng có tính chất sóng; khi hai sóng ánh sáng gặp nhau,
+                  nếu cùng nhịp (cùng pha) chúng sẽ cộng gộp làm sáng rực lên,
+                  nếu ngược nhịp (ngược pha) chúng sẽ triệt tiêu nhau thành bóng
+                  tối
+                  <span class="badge-status badge-established"
+                    >[Đã xác lập]</span
+                  >.
+                </p>
+                <div class="point-boxes">
+                  <div class="example-box">
+                    <span class="box-label">💡 Ví dụ đời thường</span>
+                    Hai gợn sóng nước đập vào nhau, chỗ thì vọt cao lên, chỗ thì
+                    mặt nước phẳng lặng.
+                  </div>
+                  <div class="caveat-box">
+                    <span class="box-label"
+                      >⚠️ Lưu ý: Chỗ ví dụ chưa chính xác</span
+                    >
+                    Sóng nước là sự dao động của các phân tử nước vật chất, còn
+                    sóng ánh sáng trong lượng tử là sóng xác suất tìm thấy hạt
+                    photon.
+                  </div>
+                </div>
+              </div>
+
+              <div class="point-card">
+                <div class="point-title">
+                  Ý 2: Giao thoa kế Mach-Zehnder (Mach-Zehnder Interferometer -
+                  MZI)
+                </div>
+                <p class="point-explain">
+                  Là thiết bị tách 1 chùm sáng ban đầu thành 2 nhánh đi theo 2
+                  con đường khác nhau, sau đó gom chúng chập lại ở cuối đường để
+                  xem chúng cộng hưởng hay triệt tiêu nhau
+                  <span class="badge-status badge-established"
+                    >[Đã xác lập]</span
+                  >.
+                </p>
+                <div class="point-boxes">
+                  <div class="example-box">
+                    <span class="box-label">💡 Ví dụ đời thường</span>
+                    Một đoàn xe đến ngã ba chia làm 2 nhánh đường vòng qua hai
+                    bên quả đồi rồi nhập lại ở ngã tư phía bên kia.
+                  </div>
+                  <div class="caveat-box">
+                    <span class="box-label"
+                      >⚠️ Lưu ý: Chỗ ví dụ chưa chính xác</span
+                    >
+                    Một chiếc xe thật chỉ đi được 1 trong 2 nhánh đường, nhưng 1
+                    hạt photon lượng tử khi đi vào giao thoa kế sẽ ở trạng thái
+                    chồng chập đi qua
+                    <strong>cả hai nhánh cùng lúc</strong> trước khi bị đo
+                    <span class="badge-status badge-established"
+                      >[Đã xác lập]</span
+                    >.
+                  </div>
+                </div>
+              </div>
+
+              <div class="point-card">
+                <div class="point-title">
+                  Ý 3: Sợi quang phi tuyến (Nonlinear optical fiber) trong giao
+                  thoa kế
+                </div>
+                <p class="point-explain">
+                  Ở mục <strong>[32]</strong>, hai nhánh đường đi được làm bằng
+                  <strong>sợi quang phi tuyến</strong>. Khi ánh sáng đi qua sợi
+                  này, chính độ mạnh yếu của ánh sáng sẽ tự làm thay đổi tốc độ
+                  đường đi của nó, giúp ta chủ động điều khiển xem ánh sáng ở
+                  cuối đường sẽ chập lại ra cổng số 0 hay cổng số 1
+                  <span class="badge-status badge-established"
+                    >[Đã xác lập]</span
+                  >.
+                </p>
+                <div class="point-boxes">
+                  <div class="example-box">
+                    <span class="box-label">💡 Ví dụ đời thường</span>
+                    Giống như con đường cao tốc thông minh tự động co giãn độ
+                    dài tùy theo số lượng xe đang chạy trên đó.
+                  </div>
+                  <div class="caveat-box">
+                    <span class="box-label"
+                      >⚠️ Lưu ý: Chỗ ví dụ chưa chính xác</span
+                    >
+                    Đường sợi quang không hề co giãn chiều dài vật lý, mà là
+                    <strong>chiết suất (refractive index)</strong> của lõi sợi
+                    quang thay đổi làm lệch nhịp sóng ánh sáng.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <div class="section-heading">3. Sơ đồ chữ tóm tắt</div>
+            <pre
+              style="
+                background: var(--surface-alt);
+                padding: 1rem;
+                border-radius: 10px;
+                overflow-x: auto;
+                font-weight: 600;
+                color: var(--primary);
+              "
+            >
+                  /=== [Nhánh sợi quang phi tuyến 1] ===\
+[Tia sáng vào] ➔ (Tách)                                 (Gộp & Giao thoa) ➔ [Đầu ra 0 hoặc 1]
+                  \=== [Nhánh sợi quang phi tuyến 2] ===/</pre
+            >
+          </div>
+
+          <div>
+            <div class="section-heading">4. Hiểu lầm thường gặp</div>
+            <div class="myth-card" onclick="this.classList.toggle('open')">
+              <button class="myth-header">
+                <span
+                  >❌ Nhiều người nghĩ: Tách tia sáng ở đầu giao thoa kế nghĩa
+                  là một nửa số hạt đi nhánh trên, một nửa đi nhánh dưới độc
+                  lập.</span
+                >
+                <span>▼ Bấm mở</span>
+              </button>
+              <div class="myth-body">
+                <strong>✅ Thực ra:</strong> Ngay cả khi bắn
+                <strong>từng hạt photon đơn lẻ</strong> vào, mỗi hạt đều tự giao
+                thoa với chính nó qua cả hai nhánh nhờ tính chất chồng chập
+                lượng tử
+                <span class="badge-status badge-established">[Đã xác lập]</span
+                >.
+              </div>
+            </div>
+          </div>
+
+          <div class="summary-3lines">
+            <div class="section-heading">5. Tóm lại trong 3 dòng</div>
+            <ul>
+              <li>
+                <strong>Giao thoa kế Mach-Zehnder</strong> tách ánh sáng làm 2
+                nhánh rồi gộp lại để khai thác hiện tượng
+                <strong>giao thoa sóng</strong>.
+              </li>
+              <li>
+                Đưa <strong>sợi quang phi tuyến</strong> vào giúp ánh sáng tự
+                điều chỉnh nhịp sóng (pha) của chính nó trên đường đi.
+              </li>
+              <li>
+                Thiết bị này đóng vai trò như cảm biến siêu nhạy hoặc cổng logic
+                xử lý thông tin lượng tử bằng ánh sáng.
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <div class="section-heading">6. Kiểm tra người nghe</div>
+            <div class="quiz-grid">
+              <div class="quiz-box">
+                <div class="quiz-q">
+                  Câu 1: Giao thoa kế Mach-Zehnder làm gì với tia sáng đi vào?
+                </div>
+                <div class="quiz-options">
+                  <button
+                    class="quiz-opt"
+                    onclick="
+                      checkQuiz(
+                        this,
+                        true,
+                        'Chính xác! Tách thành 2 đường đi rồi gộp lại để giao thoa.',
+                      )
+                    "
+                  >
+                    A. Tách thành 2 đường đi riêng biệt rồi gộp lại để giao thoa
+                    với nhau.
+                  </button>
+                  <button
+                    class="quiz-opt"
+                    onclick="
+                      checkQuiz(
+                        this,
+                        false,
+                        'Chưa đúng. Nó không nuốt mất ánh sáng mà cho giao thoa.',
+                      )
+                    "
+                  >
+                    B. Hấp thụ toàn bộ ánh sáng để biến thành nhiệt năng.
+                  </button>
+                </div>
+                <div class="quiz-feedback"></div>
+              </div>
+              <div class="quiz-box">
+                <div class="quiz-q">
+                  Câu 2: Chữ "phi tuyến" trong sợi quang ở vấn đề [32] mang lại
+                  tác dụng gì mới?
+                </div>
+                <div class="quiz-options">
+                  <button
+                    class="quiz-opt"
+                    onclick="
+                      checkQuiz(
+                        this,
+                        true,
+                        'Chính xác! Cường độ sáng tự làm thay đổi chiết suất và nhịp sóng trên đường đi.',
+                      )
+                    "
+                  >
+                    A. Giúp cường độ ánh sáng tự làm thay đổi tốc độ/nhịp sóng
+                    trên đường đi để điều khiển đầu ra.
+                  </button>
+                  <button
+                    class="quiz-opt"
+                    onclick="
+                      checkQuiz(
+                        this,
+                        false,
+                        'Chưa đúng. Sợi quang không tự co giãn chiều dài cơ học.',
+                      )
+                    "
+                  >
+                    B. Làm sợi cáp quang dài thêm vài mét ngoài đời thực.
+                  </button>
+                </div>
+                <div class="quiz-feedback"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="source-box secondary-detail">
+            <div class="section-heading">7. Nguồn & Độ chắc chắn</div>
+            <p>
+              <strong
+                >• Nguồn 1 (Sách giáo trình chuẩn – dễ đọc cho người
+                mới):</strong
+              >
+              Gerry, C., & Knight, P. (2004).
+              <em>Introductory Quantum Optics</em>. Cambridge University Press.
+              DOI:
+              <a
+                href="https://doi.org/10.1017/CBO9780511791239"
+                target="_blank"
+                rel="noopener"
+                >10.1017/CBO9780511791239</a
+              >.
+            </p>
+            <p>
+              <strong
+                >• Nguồn 2 (Sách giáo trình chuẩn về sợi quang phi
+                tuyến):</strong
+              >
+              Agrawal, G. P. (2019). <em>Nonlinear Fiber Optics</em> (6th ed.).
+              Academic Press. DOI:
+              <a
+                href="https://doi.org/10.1016/C2018-0-01168-8"
+                target="_blank"
+                rel="noopener"
+                >10.1016/C2018-0-01168-8</a
+              >.
+            </p>
+            <p>
+              <strong>• Độ chắc chắn:</strong> Nguyên lý giao thoa kế
+              Mach-Zehnder sợi quang phi tuyến là
+              <span class="badge-status badge-established">[Đã xác lập]</span>.
+              Tác giả cụ thể của bài báo số <code>[32]</code> cần xem thêm ở
+              phần tài liệu tham khảo của bạn
+              <span class="badge-status badge-verify">[Cần kiểm chứng]</span>.
+            </p>
+          </div>
+        </section>
+
+        <!-- =========================================================
+           BÀI GIẢNG 4: VẤN ĐỀ [33] + MÔ PHỎNG TƯƠNG TÁC 2
+      ========================================================== -->
+        <section id="bai-4" class="lecture-module">
+          <div class="lecture-header">
+            <span class="lecture-tag">BÀI GIẢNG 4 • VẤN ĐỀ [33]</span>
+            <h2 class="lecture-title">
+              Bộ liên kết phi tuyến để phân loại dãy xung
+            </h2>
+          </div>
+
+          <div class="hero-takeaway">
+            <span class="hero-takeaway-label">🎯 Câu chốt cần nhớ</span>
+            <div class="hero-takeaway-text">
+              <strong
+                >Bộ liên kết phi tuyến (nonlinear directional coupler)</strong
+              >
+              là linh kiện gồm hai kênh dẫn sáng đặt sát nhau, dùng tính chất
+              phi tuyến để tự động tách và phân loại các
+              <strong>dãy xung ánh sáng (pulse trains)</strong> theo mức năng
+              lượng của chúng
+              <span class="badge-status badge-established">[Đã xác lập]</span>.
+            </div>
+          </div>
+
+          <div class="intro-box">
+            <div class="section-heading">1. Mở đầu: Vì sao cần biết?</div>
+            <p>
+              Trong mạng máy tính lượng tử quang học, thông tin được gửi đi dưới
+              dạng hàng triệu chớp sáng cực ngắn liên tiếp gọi là
+              <strong>dãy xung</strong>. Làm sao để phân luồng tự động: xung nào
+              mạnh đi đường A, xung nào yếu rẽ sang đường B mà không cần người
+              đứng gạt công tắc? Vấn đề <strong>[33]</strong> giải quyết việc
+              này bằng <strong>bộ liên kết phi tuyến</strong>
+              <span class="badge-status badge-established">[Đã xác lập]</span>.
+            </p>
+          </div>
+
+          <div>
+            <div class="section-heading">2. Nội dung chính</div>
+            <div class="points-grid">
+              <div class="point-card">
+                <div class="point-title">
+                  Ý 1: Dãy xung ánh sáng (Optical pulse train) – Những gói tin
+                  chớp nhoáng
+                </div>
+                <p class="point-explain">
+                  Thay vì chiếu một tia sáng dài liên tục, người ta băm nhỏ ánh
+                  sáng thành một chuỗi các chớp sáng cực ngắn nối đuôi nhau gọi
+                  là <strong>dãy xung</strong>, mỗi xung mang thông tin riêng
+                  <span class="badge-status badge-established"
+                    >[Đã xác lập]</span
+                  >.
+                </p>
+                <div class="point-boxes">
+                  <div class="example-box">
+                    <span class="box-label">💡 Ví dụ đời thường</span>
+                    Giống như bật-tắt đèn pin liên tục để đánh tín hiệu Morse
+                    thay vì bật sáng trưng suốt buổi.
+                  </div>
+                  <div class="caveat-box">
+                    <span class="box-label"
+                      >⚠️ Lưu ý: Chỗ ví dụ chưa chính xác</span
+                    >
+                    Xung ánh sáng trong phòng thí nghiệm ngắn tới mức một phần
+                    triệu tỷ giây (femto-giây), mắt người hoàn toàn không thể
+                    nhận biết kịp.
+                  </div>
+                </div>
+              </div>
+
+              <div class="point-card">
+                <div class="point-title">
+                  Ý 2: Bộ liên kết (Directional coupler) – Hai con đường sát
+                  vách
+                </div>
+                <p class="point-explain">
+                  Là thiết bị gồm 2 sợi dẫn ánh sáng đặt nằm song song và cực kỳ
+                  sát nhau. Do hiệu ứng lượng tử (hiệu ứng đường hầm), ánh sáng
+                  đang chạy ở sợi số 1 có thể tự động "nhảy" xuyên vách sang sợi
+                  số 2
+                  <span class="badge-status badge-established"
+                    >[Đã xác lập]</span
+                  >.
+                </p>
+                <div class="point-boxes">
+                  <div class="example-box">
+                    <span class="box-label">💡 Ví dụ đời thường</span>
+                    Hai làn đường không có dải phân cách cứng, xe đang chạy làn
+                    trái có thể chuyển làn sang phải.
+                  </div>
+                  <div class="caveat-box">
+                    <span class="box-label"
+                      >⚠️ Lưu ý: Chỗ ví dụ chưa chính xác</span
+                    >
+                    Xe chuyển làn bằng tay lái cơ học, còn ánh sáng nhảy sang
+                    sợi bên cạnh nhờ sóng điện từ lan tỏa qua lớp vỏ mỏng ngăn
+                    cách hai lõi sợi quang (evanescent wave coupling).
+                  </div>
+                </div>
+              </div>
+
+              <div class="point-card">
+                <div class="point-title">
+                  Ý 3: Phân loại xung nhờ tính phi tuyến (Nonlinear pulse
+                  sorting)
+                </div>
+                <p class="point-explain">
+                  Khi làm bộ liên kết bằng vật liệu
+                  <strong>phi tuyến</strong> (mục <strong>[33]</strong>): các
+                  xung ánh sáng <strong>yếu</strong> sẽ nhảy sang sợi số 2 như
+                  bình thường; nhưng các xung ánh sáng <strong>mạnh</strong> sẽ
+                  tự làm biến đổi tính chất của sợi số 1, tự "khóa" mình lại và
+                  đi thẳng ở sợi số 1. Nhờ đó, một dãy xung hỗn hợp đi vào sẽ
+                  được tự động phân loại ra 2 cổng khác nhau
+                  <span class="badge-status badge-established"
+                    >[Đã xác lập]</span
+                  >.
+                </p>
+                <div class="point-boxes">
+                  <div class="example-box">
+                    <span class="box-label">💡 Ví dụ đời thường</span>
+                    Giống máng trượt phân loại hoa quả: quả nhẹ trượt sang rãnh
+                    phụ, quả nặng đè sập lẫy lò xo để đi thẳng vào rổ chính.
+                  </div>
+                  <div class="caveat-box">
+                    <span class="box-label"
+                      >⚠️ Lưu ý: Chỗ ví dụ chưa chính xác</span
+                    >
+                    Máng trượt dùng trọng lượng và lò xo cơ khí, còn bộ liên kết
+                    phi tuyến phân loại dựa trên sự thay đổi chiết suất ánh sáng
+                    tức thời, không có bộ phận cơ học nào chuyển động.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- MÔ PHỎNG TƯƠNG TÁC 2: BỘ LIÊN KẾT PHI TUYẾN [33] -->
+          <div class="interactive-lab">
+            <div class="lab-header">
+              <span class="lab-title"
+                >🔬 Mô phỏng tương tác [33]: Phân loại xung bằng Bộ liên kết phi
+                tuyến</span
+              >
+              <span class="badge-status badge-established"
+                >Tương tác trực tiếp</span
+              >
+            </div>
+            <div class="lab-canvas-wrap">
+              <svg viewBox="0 0 650 185" width="100%" height="185">
+                <!-- Kênh 1 và Kênh 2 -->
+                <path
+                  d="M 40 50 L 200 50 L 250 72 L 400 72 L 450 50 L 600 50"
+                  stroke="#94a3b8"
+                  stroke-width="12"
+                  fill="none"
+                  stroke-linecap="round"
+                />
+                <path
+                  d="M 40 135 L 200 135 L 250 113 L 400 113 L 450 135 L 600 135"
+                  stroke="#94a3b8"
+                  stroke-width="12"
+                  fill="none"
+                  stroke-linecap="round"
+                />
+
+                <text
+                  x="55"
+                  y="32"
+                  font-size="12"
+                  font-weight="bold"
+                  fill="currentColor"
+                >
+                  Kênh dẫn 1 (Đầu vào)
+                </text>
+                <text
+                  x="55"
+                  y="165"
+                  font-size="12"
+                  font-weight="bold"
+                  fill="currentColor"
+                >
+                  Kênh dẫn 2
+                </text>
+                <text
+                  x="545"
+                  y="32"
+                  font-size="12"
+                  font-weight="bold"
+                  fill="#0f766e"
+                >
+                  Cổng ra 1 (Thẳng)
+                </text>
+                <text
+                  x="545"
+                  y="165"
+                  font-size="12"
+                  font-weight="bold"
+                  fill="#d97706"
+                >
+                  Cổng ra 2 (Chéo)
+                </text>
+
+                <!-- Đường đi của xung ánh sáng -->
+                <path
+                  id="coupler-beam"
+                  d="M 40 50 L 200 50 L 250 72 L 325 92 L 400 113 L 450 135 L 600 135"
+                  stroke="#d97706"
+                  stroke-width="6"
+                  fill="none"
+                  stroke-dasharray="8 4"
+                />
+              </svg>
+              <div
+                id="coupler-desc"
+                style="
+                  font-weight: 700;
+                  color: var(--accent);
+                  margin-top: 0.4rem;
+                "
+              >
+                Đang chọn: Xung năng lượng THẤP (Yếu) ➔ Nhảy sang Kênh 2 (Ra
+                Cổng Chéo)
+              </div>
+              <div class="lab-controls">
+                <button
+                  class="btn active"
+                  id="btn-pulse-low"
+                  onclick="setCouplerPulse('low')"
+                >
+                  Bắn Xung Yếu (Năng lượng thấp)
+                </button>
+                <button
+                  class="btn"
+                  id="btn-pulse-high"
+                  onclick="setCouplerPulse('high')"
+                >
+                  Bắn Xung Mạnh (Kích hoạt Phi tuyến)
+                </button>
+              </div>
+            </div>
+            <p class="lab-disclaimer">
+              *Ghi chú khoa học: Hình minh họa đơn giản hóa phương trình các
+              mode kết cặp phi tuyến (nonlinear coupled-mode equations) của
+              Jensen (1982).
+            </p>
+          </div>
+
+          <div class="table-wrap">
+            <div class="section-heading">3. Bảng tóm tắt</div>
+            <table class="summary-table">
+              <thead>
+                <tr>
+                  <th>Loại xung trong dãy xung</th>
+                  <th>Hành vi trong Bộ liên kết phi tuyến [33]</th>
+                  <th>Cổng đi ra</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Xung năng lượng thấp (Yếu)</strong></td>
+                  <td>
+                    Không làm thay đổi môi trường ➔ Nhảy sang kênh bên cạnh
+                  </td>
+                  <td><strong>Ra Cổng 2 (Chéo)</strong></td>
+                </tr>
+                <tr>
+                  <td><strong>Xung năng lượng cao (Mạnh)</strong></td>
+                  <td>Kích hoạt hiệu ứng phi tuyến ➔ Tự giữ mình đi thẳng</td>
+                  <td><strong>Ra Cổng 1 (Thẳng)</strong></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div>
+            <div class="section-heading">4. Hiểu lầm thường gặp</div>
+            <div class="myth-card" onclick="this.classList.toggle('open')">
+              <button class="myth-header">
+                <span
+                  >❌ Nhiều người nghĩ: Phải có một con chip điện tử đo xem xung
+                  sáng mạnh hay yếu rồi mới bấm nút gạt đường ray cho nó
+                  đi.</span
+                >
+                <span>▼ Bấm mở</span>
+              </button>
+              <div class="myth-body">
+                <strong>✅ Thực ra:</strong> Quá trình phân loại ở
+                <strong>[33]</strong> diễn ra
+                <strong
+                  >hoàn toàn tự động bằng vật lý ánh sáng (all-optical)</strong
+                >, chính xung sáng tự bẻ ghi đường đi của nó nhờ môi trường phi
+                tuyến nên tốc độ cực nhanh
+                <span class="badge-status badge-established">[Đã xác lập]</span
+                >.
+              </div>
+            </div>
+          </div>
+
+          <div class="summary-3lines">
+            <div class="section-heading">5. Tóm lại trong 3 dòng</div>
+            <ul>
+              <li>
+                <strong>Dãy xung</strong> là chuỗi các chớp sáng mang thông tin
+                nối tiếp nhau.
+              </li>
+              <li>
+                <strong>Bộ liên kết</strong> đặt hai đường dẫn sáng sát nhau để
+                ánh sáng có thể truyền qua lại.
+              </li>
+              <li>
+                Nhờ tính <strong>phi tuyến</strong>, các xung sáng có cường độ
+                khác nhau sẽ tự động rẽ vào các kênh khác nhau, giúp
+                <strong>phân loại dãy xung</strong> siêu tốc.
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <div class="section-heading">6. Kiểm tra người nghe</div>
+            <div class="quiz-grid">
+              <div class="quiz-box">
+                <div class="quiz-q">
+                  Câu 1: Trong bộ liên kết phi tuyến [33], điều gì quyết định
+                  một xung ánh sáng đi thẳng hay nhảy sang kênh bên cạnh?
+                </div>
+                <div class="quiz-options">
+                  <button
+                    class="quiz-opt"
+                    onclick="
+                      checkQuiz(
+                        this,
+                        true,
+                        'Chính xác! Cường độ (năng lượng) của chính xung ánh sáng đó quyết định.',
+                      )
+                    "
+                  >
+                    A. Cường độ (mức năng lượng mạnh hay yếu) của chính xung ánh
+                    sáng đó.
+                  </button>
+                  <button
+                    class="quiz-opt"
+                    onclick="
+                      checkQuiz(
+                        this,
+                        false,
+                        'Chưa đúng. Không có rơ-le cơ khí nào ở đây.',
+                      )
+                    "
+                  >
+                    B. Một công tắc cơ khí bật tắt bằng tay.
+                  </button>
+                </div>
+                <div class="quiz-feedback"></div>
+              </div>
+              <div class="quiz-box">
+                <div class="quiz-q">
+                  Câu 2: Tại sao thiết bị này phân loại xung nhanh hơn công tắc
+                  điện tử thông thường?
+                </div>
+                <div class="quiz-options">
+                  <button
+                    class="quiz-opt"
+                    onclick="
+                      checkQuiz(
+                        this,
+                        true,
+                        'Chính xác! Nó hoạt động hoàn toàn bằng quang học (all-optical) qua hiệu ứng phi tuyến.',
+                      )
+                    "
+                  >
+                    A. Vì ánh sáng tự điều khiển đường đi qua hiệu ứng phi
+                    tuyến, không cần mạch điện đo đạc trung gian.
+                  </button>
+                  <button
+                    class="quiz-opt"
+                    onclick="
+                      checkQuiz(
+                        this,
+                        false,
+                        'Chưa đúng. Thiết bị này không dùng pin điện áp cao để gạt.',
+                      )
+                    "
+                  >
+                    B. Vì nó dùng dòng điện hàng nghìn Vôn.
+                  </button>
+                </div>
+                <div class="quiz-feedback"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="source-box secondary-detail">
+            <div class="section-heading">7. Nguồn & Độ chắc chắn</div>
+            <p>
+              <strong>• Nguồn 1 (Bài báo bình duyệt đặt nền móng):</strong>
+              Jensen, S. M. (1982). "The nonlinear coherent coupler".
+              <em>IEEE Journal of Quantum Electronics</em>, 18(10), 1580–1583.
+              DOI:
+              <a
+                href="https://doi.org/10.1109/JQE.1982.1071438"
+                target="_blank"
+                rel="noopener"
+                >10.1109/JQE.1982.1071438</a
+              >.
+            </p>
+            <p>
+              <strong>• Nguồn 2 (Sách giáo trình chuẩn):</strong> Agrawal, G. P.
+              (2019). <em>Nonlinear Fiber Optics</em> (6th ed.). Academic Press.
+            </p>
+            <p>
+              <strong>• Độ chắc chắn:</strong> Nguyên lý bộ liên kết phi tuyến
+              phân loại xung là
+              <span class="badge-status badge-established">[Đã xác lập]</span>.
+              Trích dẫn số <code>[33]</code> cụ thể trong văn bản của bạn cần
+              đối chiếu thêm ở danh mục tài liệu gốc
+              <span class="badge-status badge-verify">[Cần kiểm chứng]</span>.
+            </p>
+          </div>
+        </section>
+
+        <!-- =========================================================
+           BÀI GIẢNG 5: GỘP VẤN ĐỀ [34] & [35] + MÔ PHỎNG TƯƠNG TÁC 3
+      ========================================================== -->
+        <section id="bai-5" class="lecture-module">
+          <div class="lecture-header">
+            <span class="lecture-tag"
+              >BÀI GIẢNG 5 • GỘP VẤN ĐỀ [34] & [35]</span
+            >
+            <h2 class="lecture-title">
+              Trạng thái nén đối với chuẩn hạt Exciton [34] và Biexciton [35]
+            </h2>
+          </div>
+
+          <div class="hero-takeaway">
+            <span class="hero-takeaway-label">🎯 Câu chốt cần nhớ</span>
+            <div class="hero-takeaway-text">
+              Các nghiên cứu <strong>[34]</strong> và <strong>[35]</strong> tìm
+              cách ép giảm độ nhiễu lượng tử tự nhiên — gọi là
+              <strong>trạng thái nén (squeezed state)</strong> — cho các
+              <strong>chuẩn hạt exciton [34]</strong> và
+              <strong>biexciton [35]</strong> bên trong vật liệu bán dẫn để giúp
+              chip lượng tử hoạt động chính xác hơn
+              <span class="badge-status badge-established">[Đã xác lập]</span>.
+            </div>
+          </div>
+
+          <div class="intro-box">
+            <div class="section-heading">1. Mở đầu: Vì sao cần biết?</div>
+            <p>
+              Không phải máy tính lượng tử nào cũng dùng ánh sáng bay trong
+              không khí; nhiều loại chip lượng tử được làm từ chất bán dẫn rắn
+              (như linh kiện máy tính). Khi chiếu sáng vào chất bán dẫn, ánh
+              sáng biến thành các hạt đặc biệt gọi là
+              <strong>exciton [34]</strong> và <strong>biexciton [35]</strong>,
+              và chúng ta cần kỹ thuật <strong>nén lượng tử</strong> để giảm sai
+              số cho chúng
+              <span class="badge-status badge-established">[Đã xác lập]</span>.
+              <em
+                >(Hai số này được gộp chung vì Biexciton [35] chính là hai hạt
+                Exciton [34] ghép lại).</em
+              >
+            </p>
+          </div>
+
+          <div>
+            <div class="section-heading">2. Nội dung chính</div>
+            <div class="points-grid">
+              <div class="point-card">
+                <div class="point-title">
+                  Ý 1: Chuẩn hạt Exciton [34] – Cặp đôi hoàn hảo trong chất bán
+                  dẫn
+                </div>
+                <p class="point-explain">
+                  Trong chất bán dẫn, khi một hạt điện tử (<strong
+                    >electron</strong
+                  >
+                  – mang điện âm) nhận năng lượng và nhảy ra khỏi chỗ ngồi của
+                  nó, nó để lại một
+                  <strong>lỗ trống (hole – mang điện dương)</strong>. Hai thứ
+                  này hút nhau và quay quanh nhau như một hạt duy nhất, gọi là
+                  <strong>chuẩn hạt exciton (exciton quasiparticle)</strong>
+                  <span class="badge-status badge-established"
+                    >[Đã xác lập]</span
+                  >.
+                </p>
+                <div class="point-boxes">
+                  <div class="example-box">
+                    <span class="box-label">💡 Ví dụ đời thường</span>
+                    Giống như trong một rạp hát kín chỗ, một người (electron)
+                    đứng dậy đi lại tạo ra một chiếc ghế trống (lỗ trống); nếu
+                    người đó cứ đi quanh quẩn cạnh chiếc ghế của mình thì "cặp
+                    người - ghế trống" đó di chuyển cùng nhau.
+                  </div>
+                  <div class="caveat-box">
+                    <span class="box-label"
+                      >⚠️ Lưu ý: Chỗ ví dụ chưa chính xác</span
+                    >
+                    Ghế trống trong rạp hát đứng yên một chỗ, còn "lỗ trống"
+                    trong chất bán dẫn có thể di chuyển khắp tinh thể và có khối
+                    lượng hiệu dụng giống như một hạt vật chất thật sự
+                    <span class="badge-status badge-established"
+                      >[Đã xác lập]</span
+                    >.
+                  </div>
+                </div>
+              </div>
+
+              <div class="point-card">
+                <div class="point-title">
+                  Ý 2: Biexciton [35] – Phân tử gồm hai cặp Exciton
+                </div>
+                <p class="point-explain">
+                  Khi mật độ đủ cao, <strong>hai hạt exciton [34]</strong> sẽ
+                  hút nhau và kết hợp lại thành một cụm 4 hạt (gồm 2 electron và
+                  2 lỗ trống), được gọi là một
+                  <strong>biexciton (phân tử exciton)</strong> ở mục
+                  <strong>[35]</strong>
+                  <span class="badge-status badge-established"
+                    >[Đã xác lập]</span
+                  >.
+                </p>
+                <div class="point-boxes">
+                  <div class="example-box">
+                    <span class="box-label">💡 Ví dụ đời thường</span>
+                    Giống như hai cặp nhảy đôi (2 exciton) nắm tay nhau tạo
+                    thành một nhóm nhảy 4 người (1 biexciton).
+                  </div>
+                  <div class="caveat-box">
+                    <span class="box-label"
+                      >⚠️ Lưu ý: Chỗ ví dụ chưa chính xác</span
+                    >
+                    Nhóm nhảy 4 người chỉ nắm tay cơ học, còn biexciton liên kết
+                    bằng lực tương tác tĩnh điện lượng tử (tương tự như 2 nguyên
+                    tử Hydro ghép thành phân tử H₂).
+                  </div>
+                </div>
+              </div>
+
+              <div class="point-card">
+                <div class="point-title">
+                  Ý 3: Trạng thái nén (Squeezed state) áp dụng cho [34] và [35]
+                </div>
+                <p class="point-explain">
+                  Theo quy luật tự nhiên, mọi hạt lượng tử luôn có một "độ
+                  rung/nhiễu nền" không thể xóa bỏ.
+                  <strong>Trạng thái nén (squeezed state)</strong> là kỹ thuật
+                  dùng hiệu ứng phi tuyến để "bóp" nhỏ độ nhiễu ở thông số ta
+                  cần đo của hạt <strong>exciton [34]</strong> hoặc
+                  <strong>biexciton [35]</strong>, chấp nhận để thông số còn lại
+                  nhiễu mạnh hơn
+                  <span class="badge-status badge-established"
+                    >[Đã xác lập]</span
+                  >.
+                </p>
+                <div class="point-boxes">
+                  <div class="example-box">
+                    <span class="box-label">💡 Ví dụ đời thường</span>
+                    Giống như bóp dẹt một quả bóng bay chứa nước: muốn bề ngang
+                    của nó thật mỏng và cố định (giảm nhiễu chiều ngang), thì
+                    chiều dọc của quả bóng bắt buộc phải phồng to ra.
+                  </div>
+                  <div class="caveat-box">
+                    <span class="box-label"
+                      >⚠️ Lưu ý: Chỗ ví dụ chưa chính xác</span
+                    >
+                    Quả bóng nước bị bóp méo hình dáng vật lý trong không gian,
+                    còn "nén" ở [34], [35] là nén vùng sai số xác suất (độ bất
+                    định lượng tử), không phải ép bẹp hạt exciton.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- MÔ PHỎNG TƯƠNG TÁC 3: TRẠNG THÁI NÉN LƯỢNG TỬ [34]-[35] -->
+          <div class="interactive-lab">
+            <div class="lab-header">
+              <span class="lab-title"
+                >🔬 Mô phỏng tương tác [34]–[35]: Nén vùng bất định lượng tử
+                (Quantum Squeezing)</span
+              >
+              <span class="badge-status badge-established"
+                >Kéo thanh trượt</span
+              >
+            </div>
+            <div class="lab-canvas-wrap">
+              <svg viewBox="0 0 400 220" width="100%" height="220">
+                <!-- Hệ trục tọa độ không gian pha X1, X2 -->
+                <line
+                  x1="60"
+                  y1="110"
+                  x2="340"
+                  y2="110"
+                  stroke="#94a3b8"
+                  stroke-width="1.5"
+                />
+                <line
+                  x1="200"
+                  y1="15"
+                  x2="200"
+                  y2="205"
+                  stroke="#94a3b8"
+                  stroke-width="1.5"
+                />
+                <text
+                  x="345"
+                  y="114"
+                  font-size="12"
+                  font-weight="bold"
+                  fill="currentColor"
+                >
+                  ΔX₁
+                </text>
+                <text
+                  x="206"
+                  y="25"
+                  font-size="12"
+                  font-weight="bold"
+                  fill="currentColor"
+                >
+                  ΔX₂
+                </text>
+
+                <!-- Vòng tròn giới hạn chuẩn (chưa nén) -->
+                <circle
+                  cx="200"
+                  cy="110"
+                  r="50"
+                  fill="none"
+                  stroke="#94a3b8"
+                  stroke-dasharray="4 4"
+                  stroke-width="1.5"
+                />
+
+                <!-- Hình elip trạng thái nén -->
+                <ellipse
+                  id="squeeze-ellipse"
+                  cx="200"
+                  cy="110"
+                  rx="50"
+                  ry="50"
+                  fill="rgba(20, 184, 166, 0.25)"
+                  stroke="#0f766e"
+                  stroke-width="3"
+                />
+              </svg>
+              <div
+                id="squeeze-readout"
+                style="font-weight: 700; color: var(--primary)"
+              >
+                Chưa nén: Sai số ΔX₁ = 1.00 | Sai số ΔX₂ = 1.00 (Diện tích bất
+                định ΔX₁·ΔX₂ = 1.00 không đổi)
+              </div>
+              <div class="lab-controls">
+                <label for="squeeze-slider" style="font-weight: 600"
+                  >Mức độ nén:</label
+                >
+                <input
+                  type="range"
+                  id="squeeze-slider"
+                  min="40"
+                  max="200"
+                  value="100"
+                  oninput="updateSqueeze(this.value)"
+                />
+                <button
+                  class="btn"
+                  onclick="
+                    document.getElementById('squeeze-slider').value = 100;
+                    updateSqueeze(100);
+                  "
+                >
+                  Đặt lại
+                </button>
+              </div>
+            </div>
+            <p class="lab-disclaimer">
+              *Ghi chú khoa học: Hình elip biểu diễn vùng sai số lượng tử trong
+              không gian pha (phase space). Khi ép giảm sai số ở một trục, trục
+              vuông góc bắt buộc phình ra để đảm bảo nguyên lý bất định
+              Heisenberg.
+            </p>
+          </div>
+
+          <div class="table-wrap">
+            <div class="section-heading">3. Bảng tóm tắt</div>
+            <table class="summary-table">
+              <thead>
+                <tr>
+                  <th>Vấn đề</th>
+                  <th>Đối tượng được "nén" giảm nhiễu</th>
+                  <th>Cấu tạo vật lý trong chất bán dẫn</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Số [34]</strong></td>
+                  <td><strong>Exciton</strong> (Chuẩn hạt đơn)</td>
+                  <td>
+                    <strong>1 Electron</strong> (âm) +
+                    <strong>1 Lỗ trống</strong> (dương)
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>Số [35]</strong></td>
+                  <td><strong>Biexciton</strong> (Chuẩn hạt kép)</td>
+                  <td>
+                    <strong>2 Exciton ghép lại</strong> (2 Electron + 2 Lỗ
+                    trống)
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div>
+            <div class="section-heading">4. Hiểu lầm thường gặp</div>
+            <div class="myth-card" onclick="this.classList.toggle('open')">
+              <button class="myth-header">
+                <span
+                  >❌ Nhiều người nghĩ: "Chuẩn hạt (quasiparticle)" như exciton
+                  là hạt giả, không có tác dụng thật.</span
+                >
+                <span>▼ Bấm mở</span>
+              </button>
+              <div class="myth-body">
+                <strong>✅ Thực ra:</strong> Dù nó được tạo thành từ sự chuyển
+                động tập thể trong chất rắn chứ không tồn tại tự do ngoài chân
+                không, nó vẫn mang năng lượng, tương tác và tạo ra trạng thái
+                lượng tử thật 100%
+                <span class="badge-status badge-established">[Đã xác lập]</span
+                >.
+              </div>
+            </div>
+          </div>
+
+          <div class="summary-3lines">
+            <div class="section-heading">5. Tóm lại trong 3 dòng</div>
+            <ul>
+              <li>
+                <strong>Exciton [34]</strong> là cặp điện tử - lỗ trống trong
+                chất bán dẫn; <strong>Biexciton [35]</strong> là hai cặp exciton
+                ghép lại.
+              </li>
+              <li>
+                <strong>Trạng thái nén</strong> là kỹ thuật ép giảm độ nhiễu
+                lượng tử ở một đại lượng cần đo để tăng độ chính xác.
+              </li>
+              <li>
+                Nghiên cứu <strong>[34]</strong> và <strong>[35]</strong> giúp
+                kiểm soát nhiễu lượng tử ngay bên trong các vật liệu bán dẫn
+                rắn.
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <div class="section-heading">6. Kiểm tra người nghe</div>
+            <div class="quiz-grid">
+              <div class="quiz-box">
+                <div class="quiz-q">
+                  Câu 1: Hạt Biexciton ở mục [35] được cấu tạo từ cái gì ở mục
+                  [34]?
+                </div>
+                <div class="quiz-options">
+                  <button
+                    class="quiz-opt"
+                    onclick="
+                      checkQuiz(
+                        this,
+                        true,
+                        'Chính xác! Biexciton gồm 2 chuẩn hạt Exciton kết hợp lại (2 electron + 2 lỗ trống).',
+                      )
+                    "
+                  >
+                    A. Tạo thành từ 2 chuẩn hạt Exciton kết hợp lại với nhau (2
+                    electron và 2 lỗ trống).
+                  </button>
+                  <button
+                    class="quiz-opt"
+                    onclick="
+                      checkQuiz(
+                        this,
+                        false,
+                        'Chưa đúng. Đó là cấu tạo của hạt nhân nguyên tử.',
+                      )
+                    "
+                  >
+                    B. Tạo thành từ 2 hạt proton và 2 hạt neutron.
+                  </button>
+                </div>
+                <div class="quiz-feedback"></div>
+              </div>
+              <div class="quiz-box">
+                <div class="quiz-q">
+                  Câu 2: Khi thực hiện "nén" (squeezing) lên exciton hay
+                  biexciton, ta đang làm giảm cái gì?
+                </div>
+                <div class="quiz-options">
+                  <button
+                    class="quiz-opt"
+                    onclick="
+                      checkQuiz(
+                        this,
+                        false,
+                        'Chưa đúng. Nén lượng tử không phải là nén thể tích không gian.',
+                      )
+                    "
+                  >
+                    A. Làm giảm kích thước hình học của viên đá bán dẫn.
+                  </button>
+                  <button
+                    class="quiz-opt"
+                    onclick="
+                      checkQuiz(
+                        this,
+                        true,
+                        'Chính xác! Giảm độ nhiễu/sai số lượng tử ở đại lượng cần đo.',
+                      )
+                    "
+                  >
+                    B. Làm giảm độ nhiễu/sai số lượng tử của một đại lượng cần
+                    đo (đại lượng đi kèm sẽ tăng nhiễu).
+                  </button>
+                </div>
+                <div class="quiz-feedback"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="source-box secondary-detail">
+            <div class="section-heading">7. Nguồn & Độ chắc chắn</div>
+            <p>
+              <strong
+                >• Nguồn (Sách giáo trình chuẩn quốc tế về bán dẫn lượng
+                tử):</strong
+              >
+              Haug, H., & Koch, S. W. (2009).
+              <em
+                >Quantum Theory of the Optical and Electronic Properties of
+                Semiconductors</em
+              >
+              (5th ed.). World Scientific. DOI:
+              <a
+                href="https://doi.org/10.1142/7184"
+                target="_blank"
+                rel="noopener"
+                >10.1142/7184</a
+              >.
+            </p>
+            <p>
+              <strong>• Độ chắc chắn:</strong> Bản chất vật lý của exciton,
+              biexciton và trạng thái nén là
+              <span class="badge-status badge-established">[Đã xác lập]</span>.
+              Tác giả cụ thể của <code>[34]</code> và <code>[35]</code> trong
+              tài liệu tiếng Việt của bạn cần đối chiếu thêm với phần References
+              gốc
+              <span class="badge-status badge-verify">[Cần kiểm chứng]</span>.
+            </p>
+          </div>
+        </section>
+
+        <!-- =========================================================
+           BÀI GIẢNG 6: VẤN ĐỀ [36]
+      ========================================================== -->
+        <section id="bai-6" class="lecture-module">
+          <div class="lecture-header">
+            <span class="lecture-tag">BÀI GIẢNG 6 • VẤN ĐỀ [36]</span>
+            <h2 class="lecture-title">
+              Trạng thái kết hợp bộ ba (Triplet Coherent State)
+            </h2>
+          </div>
+
+          <div class="hero-takeaway">
+            <span class="hero-takeaway-label">🎯 Câu chốt cần nhớ</span>
+            <div class="hero-takeaway-text">
+              <strong
+                >Trạng thái kết hợp bộ ba (triplet coherent state / three-photon
+                coherent state)</strong
+              >
+              là trạng thái lượng tử phi tuyến mà ở đó các hạt được tạo ra hoặc
+              mất đi theo từng cụm <strong>3 hạt cùng một lúc</strong>, thay vì
+              từng hạt đơn lẻ
+              <span class="badge-status badge-established">[Đã xác lập]</span>.
+            </div>
+          </div>
+
+          <div class="intro-box">
+            <div class="section-heading">1. Mở đầu: Vì sao cần biết?</div>
+            <p>
+              Ánh sáng từ bút chiếu laser thông thường phát ra các hạt độc lập
+              (gọi là trạng thái kết hợp chuẩn), và nhiều thí nghiệm lượng tử
+              chỉ ghép từng cặp 2 hạt. Vấn đề <strong>[36]</strong> tiến thêm
+              một bước khó hơn: làm sao tạo ra và kiểm soát trạng thái mà các
+              hạt luôn đi theo
+              <strong>cụm bộ ba (3 hạt gắn kết đồng thời)</strong>
+              <span class="badge-status badge-established">[Đã xác lập]</span>?
+            </p>
+          </div>
+
+          <div>
+            <div class="section-heading">2. Nội dung chính</div>
+            <div class="points-grid">
+              <div class="point-card">
+                <div class="point-title">
+                  Ý 1: Trạng thái kết hợp thông thường (Coherent state) – Chuẩn
+                  mực của tia laser
+                </div>
+                <p class="point-explain">
+                  Là trạng thái ánh sáng ổn định nhất, giống nhất với sóng ánh
+                  sáng cổ điển (như tia laser), nơi các hạt photon được phát ra
+                  một cách độc lập, từng hạt một
+                  <span class="badge-status badge-established"
+                    >[Đã xác lập]</span
+                  >.
+                </p>
+                <div class="point-boxes">
+                  <div class="example-box">
+                    <span class="box-label">💡 Ví dụ đời thường</span>
+                    Giống như những giọt mưa rơi độc lập từ trên mái hiên xuống.
+                  </div>
+                  <div class="caveat-box">
+                    <span class="box-label"
+                      >⚠️ Lưu ý: Chỗ ví dụ chưa chính xác</span
+                    >
+                    Giọt mưa tuân theo định luật rơi tự do cổ điển, còn trạng
+                    thái kết hợp vẫn là một chồng chập lượng tử của nhiều mức số
+                    hạt photon khác nhau.
+                  </div>
+                </div>
+              </div>
+
+              <div class="point-card">
+                <div class="point-title">
+                  Ý 2: Quá trình phi tuyến bậc cao – Sinh hủy theo cụm 3 hạt
+                </div>
+                <p class="point-explain">
+                  Trong một số môi trường phi tuyến đặc biệt, một hạt năng lượng
+                  cao có thể tách thành
+                  <strong>3 hạt năng lượng thấp hơn cùng lúc</strong> (hoặc 3
+                  hạt gộp làm 1). Đây là cơ sở vật lý của mục
+                  <strong>[36]</strong>
+                  <span class="badge-status badge-established"
+                    >[Đã xác lập]</span
+                  >.
+                </p>
+                <div class="point-boxes">
+                  <div class="example-box">
+                    <span class="box-label">💡 Ví dụ đời thường</span>
+                    Giống như đổi 1 tờ tiền mệnh giá 30.000đ (giả sử có) lấy
+                    đúng 3 tờ 10.000đ trong một lần giao dịch duy nhất.
+                  </div>
+                  <div class="caveat-box">
+                    <span class="box-label"
+                      >⚠️ Lưu ý: Chỗ ví dụ chưa chính xác</span
+                    >
+                    Tiền giấy là vật chất tĩnh, còn quá trình tách/gộp 3 photon
+                    là sự bảo toàn năng lượng và động lượng của sóng điện từ
+                    trong tinh thể phi tuyến.
+                  </div>
+                </div>
+              </div>
+
+              <div class="point-card">
+                <div class="point-title">
+                  Ý 3: Trạng thái kết hợp bộ ba (Triplet coherent state) [36]
+                </div>
+                <p class="point-explain">
+                  Là trạng thái kết hợp được xây dựng dựa trên toán tử sinh/hủy
+                  <strong>cụm 3 hạt</strong> cùng lúc. Trạng thái này sở hữu
+                  những tính chất thuần túy lượng tử (như tính chất nén bậc cao
+                  hoặc thống kê hạt đặc biệt) mà tia laser thông thường không
+                  thể có
+                  <span class="badge-status badge-established"
+                    >[Đã xác lập]</span
+                  >.
+                </p>
+                <div class="point-boxes">
+                  <div class="example-box">
+                    <span class="box-label">💡 Ví dụ đời thường</span>
+                    Giống như một trò chơi mà luật bắt buộc mỗi bước đi phải có
+                    đúng 3 người nắm tay nhau cùng bước vào hoặc cùng bước ra
+                    khỏi phòng.
+                  </div>
+                  <div class="caveat-box">
+                    <span class="box-label"
+                      >⚠️ Lưu ý: Chỗ ví dụ chưa chính xác</span
+                    >
+                    Ba người trong phòng vẫn là 3 cá thể tách biệt, còn 3 hạt
+                    trong trạng thái kết hợp bộ ba không thể phân biệt từng hạt
+                    riêng rẽ mà hòa chung vào một hàm sóng lượng tử.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <div class="section-heading">3. Bảng tóm tắt</div>
+            <table class="summary-table">
+              <thead>
+                <tr>
+                  <th>Loại trạng thái</th>
+                  <th>Cách các hạt tham gia vào hệ thống</th>
+                  <th>Tính chất lượng tử</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Trạng thái kết hợp chuẩn</strong> (Laser)</td>
+                  <td>Từng hạt đơn lẻ (<strong>1 hạt</strong>)</td>
+                  <td>Gần giống ánh sáng cổ điển nhất</td>
+                </tr>
+                <tr>
+                  <td><strong>Trạng thái kết hợp bộ ba [36]</strong></td>
+                  <td>Theo từng cụm bộ ba (<strong>3 hạt cùng lúc</strong>)</td>
+                  <td>
+                    Có tính phi cổ điển mạnh (nén bậc cao, chống kết chùm...)
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div>
+            <div class="section-heading">4. Hiểu lầm thường gặp</div>
+            <div class="myth-card" onclick="this.classList.toggle('open')">
+              <button class="myth-header">
+                <span
+                  >❌ Nhiều người nghĩ: "Trạng thái kết hợp bộ ba" nghĩa là
+                  trong phòng thí nghiệm lúc nào cũng chỉ có đúng 3 hạt
+                  photon.</span
+                >
+                <span>▼ Bấm mở</span>
+              </button>
+              <div class="myth-body">
+                <strong>✅ Thực ra:</strong> Số lượng hạt có thể là 0, 3, 6,
+                9... (bội số của 3, hoặc dịch chuyển từ một số gốc theo từng
+                bước 3 hạt), nghĩa là chúng biến thiên theo
+                <strong>từng gói 3 hạt</strong> chứ không phải tổng cộng chỉ có
+                3 hạt
+                <span class="badge-status badge-established">[Đã xác lập]</span
+                >.
+              </div>
+            </div>
+          </div>
+
+          <div class="summary-3lines">
+            <div class="section-heading">5. Tóm lại trong 3 dòng</div>
+            <ul>
+              <li>
+                <strong>Trạng thái kết hợp</strong> thông thường (như tia laser)
+                xử lý các hạt ánh sáng một cách đơn lẻ.
+              </li>
+              <li>
+                Nhờ tương tác phi tuyến bậc cao, hệ lượng tử có thể sinh ra hoặc
+                hấp thụ <strong>3 hạt cùng một lúc</strong>.
+              </li>
+              <li>
+                <strong>Trạng thái kết hợp bộ ba [36]</strong> mô tả hệ thống
+                hoạt động theo cụm 3 hạt này, tạo ra các hiệu ứng lượng tử mạnh
+                mẽ hơn trạng thái đơn hạt.
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <div class="section-heading">6. Kiểm tra người nghe</div>
+            <div class="quiz-grid">
+              <div class="quiz-box">
+                <div class="quiz-q">
+                  Câu 1: Điểm khác biệt cốt lõi giữa trạng thái kết hợp bộ ba
+                  [36] và tia laser thường là gì?
+                </div>
+                <div class="quiz-options">
+                  <button
+                    class="quiz-opt"
+                    onclick="
+                      checkQuiz(
+                        this,
+                        true,
+                        'Chính xác! Trạng thái kết hợp bộ ba thêm/bớt đồng thời từng cụm 3 hạt.',
+                      )
+                    "
+                  >
+                    A. Laser thường thêm/bớt từng hạt một, còn trạng thái kết
+                    hợp bộ ba thêm/bớt đồng thời từng cụm 3 hạt.
+                  </button>
+                  <button
+                    class="quiz-opt"
+                    onclick="
+                      checkQuiz(
+                        this,
+                        false,
+                        'Chưa đúng. Không phải là dùng 3 chiếc đèn pin màu khác nhau.',
+                      )
+                    "
+                  >
+                    B. Là dùng 3 chiếc đèn laser chiếu 3 màu Đỏ, Xanh, Vàng.
+                  </button>
+                </div>
+                <div class="quiz-feedback"></div>
+              </div>
+              <div class="quiz-box">
+                <div class="quiz-q">
+                  Câu 2: Trong trạng thái kết hợp bộ ba, số lượng hạt thay đổi
+                  theo từng bước là mấy hạt?
+                </div>
+                <div class="quiz-options">
+                  <button
+                    class="quiz-opt"
+                    onclick="
+                      checkQuiz(
+                        this,
+                        false,
+                        'Chưa đúng. Đó là trạng thái đơn hạt.',
+                      )
+                    "
+                  >
+                    A. Từng bước 1 hạt.
+                  </button>
+                  <button
+                    class="quiz-opt"
+                    onclick="
+                      checkQuiz(
+                        this,
+                        true,
+                        'Chính xác! Biến thiên theo từng gói 3 hạt.',
+                      )
+                    "
+                  >
+                    B. Thay đổi theo từng bước 3 hạt.
+                  </button>
+                </div>
+                <div class="quiz-feedback"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="source-box secondary-detail">
+            <div class="section-heading">7. Nguồn & Độ chắc chắn</div>
+            <p>
+              <strong>• Nguồn 1 (Sách giáo trình chuẩn):</strong> Gerry, C., &
+              Knight, P. (2004). <em>Introductory Quantum Optics</em>. Cambridge
+              University Press.
+            </p>
+            <p>
+              <strong>• Nguồn 2 (Bài báo bình duyệt kinh điển):</strong> Fisher,
+              R. A., Nieto, M. M., & Sandberg, V. D. (1984). "Impossibility of
+              naively generalizing squeezed coherent states".
+              <em>Physical Review D</em>, 29(6), 1107–1110. DOI:
+              <a
+                href="https://doi.org/10.1103/PhysRevD.29.1107"
+                target="_blank"
+                rel="noopener"
+                >10.1103/PhysRevD.29.1107</a
+              >.
+            </p>
+            <p>
+              <strong>• Độ chắc chắn:</strong> Khái niệm trạng thái kết hợp đa
+              photon/bộ ba là
+              <span class="badge-status badge-established">[Đã xác lập]</span>.
+              Bài báo số <code>[36]</code> cụ thể trong tài liệu của bạn cần đối
+              chiếu thêm danh mục tham khảo gốc
+              <span class="badge-status badge-verify">[Cần kiểm chứng]</span>.
+            </p>
+          </div>
+        </section>
+
+        <!-- =========================================================
+           BÀI GIẢNG 7: GỘP VẤN ĐỀ [37] & [38]
+      ========================================================== -->
+        <section id="bai-7" class="lecture-module">
+          <div class="lecture-header">
+            <span class="lecture-tag"
+              >BÀI GIẢNG 7 • GỘP VẤN ĐỀ [37] & [38]</span
+            >
+            <h2 class="lecture-title">
+              Nén tổng [37] và Nén hiệu [38] trong trường đa mode
+            </h2>
+          </div>
+
+          <div class="hero-takeaway">
+            <span class="hero-takeaway-label">🎯 Câu chốt cần nhớ</span>
+            <div class="hero-takeaway-text">
+              Khi có nhiều kênh ánh sáng (<strong>trường đa mode</strong>) cùng
+              tương tác, <strong>nén tổng (sum squeezing) [37]</strong> và
+              <strong>nén hiệu (difference squeezing) [38]</strong> là hai kỹ
+              thuật song hành giúp ép giảm độ nhiễu lượng tử của phép cộng hoặc
+              phép trừ biên độ giữa các kênh đó
+              <span class="badge-status badge-established">[Đã xác lập]</span>.
+            </div>
+          </div>
+
+          <div class="intro-box">
+            <div class="section-heading">1. Mở đầu: Vì sao cần biết?</div>
+            <p>
+              Ở bài giảng [34]–[35], ta đã biết "nén lượng tử" giúp giảm nhiễu
+              cho một hệ đơn lẻ. Nhưng trong thực tế, thông tin lượng tử thường
+              được truyền đồng thời trên nhiều kênh sóng khác nhau gọi là
+              <strong>trường đa mode (multi-mode field)</strong>. Khi đó, ta
+              không chỉ nén từng kênh riêng lẻ mà phải nén sự kết hợp giữa chúng
+              thông qua hai phép toán đi đôi với nhau:
+              <strong>Nén tổng [37]</strong> và <strong>Nén hiệu [38]</strong>
+              <span class="badge-status badge-established">[Đã xác lập]</span>.
+            </p>
+          </div>
+
+          <div>
+            <div class="section-heading">2. Nội dung chính</div>
+            <div class="points-grid">
+              <div class="point-card">
+                <div class="point-title">
+                  Ý 1: Trường đa mode (Multi-mode field) – Nhiều làn đường ánh
+                  sáng cùng chạy
+                </div>
+                <p class="point-explain">
+                  Một <strong>mode (chế độ/kênh)</strong> là một làn sóng ánh
+                  sáng có tần số hoặc hướng đi riêng.
+                  <strong>Trường đa mode</strong> là hệ thống có từ 2 hay nhiều
+                  kênh ánh sáng khác nhau cùng tồn tại và tương tác với nhau
+                  <span class="badge-status badge-established"
+                    >[Đã xác lập]</span
+                  >.
+                </p>
+                <div class="point-boxes">
+                  <div class="example-box">
+                    <span class="box-label">💡 Ví dụ đời thường</span>
+                    Giống như một dàn nhạc giao hưởng có nhiều nhạc cụ (violin,
+                    piano, sáo) cùng tấu lên một lúc, mỗi nhạc cụ là một "mode".
+                  </div>
+                  <div class="caveat-box">
+                    <span class="box-label"
+                      >⚠️ Lưu ý: Chỗ ví dụ chưa chính xác</span
+                    >
+                    Âm thanh nhạc cụ là sóng cơ học truyền trong không khí, còn
+                    các mode ánh sáng là các nghiệm độc lập của trường điện từ
+                    lượng tử.
+                  </div>
+                </div>
+              </div>
+
+              <div class="point-card">
+                <div class="point-title">
+                  Ý 2: Nén tổng (Sum squeezing) [37] – Giảm nhiễu cho phép cộng
+                  các kênh
+                </div>
+                <p class="point-explain">
+                  Là hiện tượng mà khi từng kênh riêng lẻ có thể vẫn đang bị
+                  nhiễu, nhưng khi ta lấy các thông số của các kênh đó
+                  <strong>nhân/cộng kết hợp lại (tổng tần số)</strong>, độ nhiễu
+                  chung của tổng lại được ép giảm xuống dưới mức giới hạn tự
+                  nhiên
+                  <span class="badge-status badge-established"
+                    >[Đã xác lập]</span
+                  >.
+                </p>
+                <div class="point-boxes">
+                  <div class="example-box">
+                    <span class="box-label">💡 Ví dụ đời thường</span>
+                    Hai người cùng khiêng một chiếc cáng cứu thương đi trên
+                    đường gập ghềnh; dù chân mỗi người bước cao thấp khác nhau,
+                    họ phối hợp sao cho <strong>tổng lực nâng chung</strong> lên
+                    chiếc cáng luôn êm ái nhất.
+                  </div>
+                  <div class="caveat-box">
+                    <span class="box-label"
+                      >⚠️ Lưu ý: Chỗ ví dụ chưa chính xác</span
+                    >
+                    Hai người khiêng cáng phối hợp bằng phản xạ thần kinh, còn
+                    nén tổng [37] dựa trên sự tương quan pha lượng tử bậc cao
+                    giữa các mode sóng.
+                  </div>
+                </div>
+              </div>
+
+              <div class="point-card">
+                <div class="point-title">
+                  Ý 3: Nén hiệu (Difference squeezing) [38] – Giảm nhiễu cho độ
+                  chênh lệch giữa các kênh
+                </div>
+                <p class="point-explain">
+                  Ngược lại với nén tổng, <strong>nén hiệu [38]</strong> tập
+                  trung vào
+                  <strong>sự chênh lệch (hiệu số tần số/biên độ)</strong> giữa
+                  các kênh ánh sáng trong trường đa mode, giúp ép độ dao động
+                  của hiệu số này xuống mức cực nhỏ để đo sự khác biệt giữa hai
+                  kênh một cách siêu chính xác
+                  <span class="badge-status badge-established"
+                    >[Đã xác lập]</span
+                  >.
+                </p>
+                <div class="point-boxes">
+                  <div class="example-box">
+                    <span class="box-label">💡 Ví dụ đời thường</span>
+                    Vẫn là hai người khiêng chiếc bàn: dù cả hai cùng bước lên
+                    dốc hay xuống dốc (tổng độ cao thay đổi liên tục), nhưng họ
+                    giữ cho
+                    <strong
+                      >độ chênh lệch chiều cao giữa hai đầu bàn (hiệu
+                      số)</strong
+                    >
+                    luôn bằng 0 để cốc nước trên bàn không bị đổ.
+                  </div>
+                  <div class="caveat-box">
+                    <span class="box-label"
+                      >⚠️ Lưu ý: Chỗ ví dụ chưa chính xác</span
+                    >
+                    Ví dụ mặt bàn chỉ xét độ cao hình học đơn giản, còn toán tử
+                    nén hiệu [38] trong vật lý lượng tử được định nghĩa bằng
+                    tích các toán tử sinh của mode này với toán tử hủy của mode
+                    kia.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <div class="section-heading">3. Bảng tóm tắt</div>
+            <table class="summary-table">
+              <thead>
+                <tr>
+                  <th>Kỹ thuật trong trường đa mode</th>
+                  <th>Đại lượng được ép giảm nhiễu</th>
+                  <th>Ứng dụng chính</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Nén tổng (Sum squeezing) [37]</strong></td>
+                  <td>
+                    Đại lượng gắn với <strong>tổng tần số</strong> (ω₁ + ω₂) của
+                    các kênh
+                  </td>
+                  <td>
+                    Đo lường kết hợp, tạo nguồn sáng phi cổ điển tần số cao
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>Nén hiệu (Difference squeezing) [38]</strong></td>
+                  <td>
+                    Đại lượng gắn với <strong>hiệu tần số</strong> (ω₁ − ω₂)
+                    giữa các kênh
+                  </td>
+                  <td>Đo độ lệch siêu nhỏ giữa hai kênh tín hiệu</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div>
+            <div class="section-heading">4. Hiểu lầm thường gặp</div>
+            <div class="myth-card" onclick="this.classList.toggle('open')">
+              <button class="myth-header">
+                <span
+                  >❌ Nhiều người nghĩ: Muốn có nén tổng [37] hoặc nén hiệu [38]
+                  thì từng kênh ánh sáng ban đầu phải được nén sẵn.</span
+                >
+                <span>▼ Bấm mở</span>
+              </button>
+              <div class="myth-body">
+                <strong>✅ Thực ra:</strong> Từng kênh riêng rẽ khi đo độc lập
+                có thể cực kỳ nhiễu (không hề bị nén), nhưng chính
+                <strong>mối liên kết tương tác</strong> giữa các kênh mới tạo ra
+                hiệu ứng nén ở tổng hoặc hiệu của chúng
+                <span class="badge-status badge-established">[Đã xác lập]</span
+                >.
+              </div>
+            </div>
+          </div>
+
+          <div class="summary-3lines">
+            <div class="section-heading">5. Tóm lại trong 3 dòng</div>
+            <ul>
+              <li>
+                <strong>Trường đa mode</strong> là hệ thống gồm nhiều kênh ánh
+                sáng cùng hoạt động và tương tác.
+              </li>
+              <li>
+                <strong>Nén tổng [37]</strong> giúp giảm độ nhiễu lượng tử cho
+                đại lượng kết hợp theo tổng tần số các kênh.
+              </li>
+              <li>
+                <strong>Nén hiệu [38]</strong> giúp giảm độ nhiễu lượng tử cho
+                sự chênh lệch (hiệu tần số) giữa các kênh.
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <div class="section-heading">6. Kiểm tra người nghe</div>
+            <div class="quiz-grid">
+              <div class="quiz-box">
+                <div class="quiz-q">Câu 1: Thế nào là "trường đa mode"?</div>
+                <div class="quiz-options">
+                  <button
+                    class="quiz-opt"
+                    onclick="
+                      checkQuiz(
+                        this,
+                        true,
+                        'Chính xác! Nhiều kênh (mode) với tần số, hướng hoặc phân cực khác nhau cùng tương tác.',
+                      )
+                    "
+                  >
+                    A. Là trường ánh sáng có nhiều kênh (mode) với tần số, hướng
+                    hoặc phân cực khác nhau cùng tham gia tương tác.
+                  </button>
+                  <button
+                    class="quiz-opt"
+                    onclick="
+                      checkQuiz(
+                        this,
+                        false,
+                        'Chưa đúng. Đó là trường đơn mode.',
+                      )
+                    "
+                  >
+                    B. Là một tia sáng duy nhất chỉ có 1 tần số cố định.
+                  </button>
+                </div>
+                <div class="quiz-feedback"></div>
+              </div>
+              <div class="quiz-box">
+                <div class="quiz-q">
+                  Câu 2: Nếu muốn đo sự chênh lệch giữa hai kênh ánh sáng với
+                  sai số nhỏ nhất, nên quan tâm đến [37] hay [38]?
+                </div>
+                <div class="quiz-options">
+                  <button
+                    class="quiz-opt"
+                    onclick="
+                      checkQuiz(this, false, 'Chưa đúng. [37] là nén tổng.')
+                    "
+                  >
+                    A. Vấn đề [37] – Nén tổng (Sum squeezing).
+                  </button>
+                  <button
+                    class="quiz-opt"
+                    onclick="
+                      checkQuiz(
+                        this,
+                        true,
+                        'Chính xác! Nén hiệu [38] giảm nhiễu cho độ chênh lệch giữa các kênh.',
+                      )
+                    "
+                  >
+                    B. Vấn đề [38] – Nén hiệu (Difference squeezing).
+                  </button>
+                </div>
+                <div class="quiz-feedback"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="source-box secondary-detail">
+            <div class="section-heading">7. Nguồn & Độ chắc chắn</div>
+            <p>
+              <strong>• Nguồn (Bài báo bình duyệt gốc đặt nền móng):</strong>
+              Hillery, M. (1989). "Sum and difference squeezing of the
+              electromagnetic field". <em>Physical Review A</em>, 40(6),
+              3147–3155. DOI:
+              <a
+                href="https://doi.org/10.1103/PhysRevA.40.3147"
+                target="_blank"
+                rel="noopener"
+                >10.1103/PhysRevA.40.3147</a
+              >.
+            </p>
+            <p>
+              <strong>• Độ chắc chắn:</strong> Lý thuyết nén tổng và nén hiệu
+              của Mark Hillery (1989) là
+              <span class="badge-status badge-established">[Đã xác lập]</span>.
+              Bạn vẫn nên đối chiếu danh mục tài liệu tham khảo gốc xem tác giả
+              trích dẫn trực tiếp bài năm 1989 hay bài mở rộng sau đó
+              <span class="badge-status badge-verify">[Cần kiểm chứng]</span>.
+            </p>
+          </div>
+        </section>
+
+        <!-- =========================================================
+           BÀI GIẢNG 8: VẤN ĐỀ [39] + MÔ PHỎNG TƯƠNG TÁC 4
+      ========================================================== -->
+        <section id="bai-8" class="lecture-module">
+          <div class="lecture-header">
+            <span class="lecture-tag">BÀI GIẢNG 8 • VẤN ĐỀ [39]</span>
+            <h2 class="lecture-title">
+              Rối lượng tử của photon hai mode (Two-mode Photon Entanglement)
+            </h2>
+          </div>
+
+          <div class="hero-takeaway">
+            <span class="hero-takeaway-label">🎯 Câu chốt cần nhớ</span>
+            <div class="hero-takeaway-text">
+              <strong
+                >Rối lượng tử của photon hai mode (two-mode photon
+                entanglement)</strong
+              >
+              là trạng thái mà hai chùm hạt ánh sáng đi trên hai kênh riêng biệt
+              nhưng được liên kết lượng tử chặt chẽ, khiến phép đo trên kênh này
+              quyết định ngay tính chất của kênh kia
+              <span class="badge-status badge-established">[Đã xác lập]</span>.
+            </div>
+          </div>
+
+          <div class="intro-box">
+            <div class="section-heading">1. Mở đầu: Vì sao cần biết?</div>
+            <p>
+              Ở bài giảng đầu tiên <code>[26]</code>, ta đã biết cách tăng cường
+              sự đan rối trong tinh thể. Vậy khi đưa ra sử dụng thực tế để
+              truyền tin hoặc dịch chuyển tức thời lượng tử (quantum
+              teleportation) từ phòng thí nghiệm A sang phòng thí nghiệm B, sự
+              đan rối đó mang hình hài gì? Đó chính là
+              <strong>rối lượng tử của photon hai mode [39]</strong> — nền tảng
+              của truyền thông lượng tử bằng ánh sáng
+              <span class="badge-status badge-established">[Đã xác lập]</span>.
+            </p>
+          </div>
+
+          <div>
+            <div class="section-heading">2. Nội dung chính</div>
+            <div class="points-grid">
+              <div class="point-card">
+                <div class="point-title">
+                  Ý 1: Hai mode của photon (Two-mode photons) – Hai đường truyền
+                  tách biệt
+                </div>
+                <p class="point-explain">
+                  Hai mode ở đây có thể hiểu đơn giản là hai tia sáng đi theo
+                  <strong>hai hướng khác nhau</strong> (ví dụ: tia A đi sang
+                  trái, tia B đi sang phải) hoặc có
+                  <strong>hai màu (tần số) khác nhau</strong>
+                  <span class="badge-status badge-established"
+                    >[Đã xác lập]</span
+                  >.
+                </p>
+                <div class="point-boxes">
+                  <div class="example-box">
+                    <span class="box-label">💡 Ví dụ đời thường</span>
+                    Giống như hai đường ống dẫn nước riêng biệt chạy về hai ngôi
+                    nhà khác nhau.
+                  </div>
+                  <div class="caveat-box">
+                    <span class="box-label"
+                      >⚠️ Lưu ý: Chỗ ví dụ chưa chính xác</span
+                    >
+                    Nước trong ống là dòng chảy vật chất liên tục, còn mỗi mode
+                    ánh sáng chứa các hạt photon lượng tử rời rạc.
+                  </div>
+                </div>
+              </div>
+
+              <div class="point-card">
+                <div class="point-title">
+                  Ý 2: Rối lượng tử hai mode (Two-mode entanglement) [39]
+                </div>
+                <p class="point-explain">
+                  Khi chiếu một tia laser vào tinh thể phi tuyến, nó có thể sinh
+                  ra các cặp photon đi vào 2 mode A và B. Dù đi trên 2 đường
+                  tách biệt, số lượng hạt và pha sóng của kênh A và kênh B lại
+                  bị <strong>khóa chặt vào nhau</strong> (đan rối): hễ đo thấy
+                  kênh A có chính xác <em>n</em> hạt hoặc có pha như thế nào,
+                  thì kênh B lập tức có trạng thái tương ứng mà không cần chạm
+                  vào kênh B
+                  <span class="badge-status badge-established"
+                    >[Đã xác lập]</span
+                  >.
+                </p>
+                <div class="point-boxes">
+                  <div class="example-box">
+                    <span class="box-label">💡 Ví dụ đời thường</span>
+                    Giống như hai màn hình tivi ở hai phòng khác nhau nhưng dùng
+                    chung một đầu phát: hễ nhìn màn hình phòng A thấy cảnh gì
+                    thì biết chắc chắn màn hình phòng B cũng đang chiếu cảnh
+                    liên quan đó.
+                  </div>
+                  <div class="caveat-box">
+                    <span class="box-label"
+                      >⚠️ Lưu ý: Chỗ ví dụ chưa chính xác</span
+                    >
+                    Hai tivi nhận tín hiệu cổ điển đã định sẵn từ đầu phát, còn
+                    hai mode photon đan rối ở <strong>[39]</strong> chưa hề có
+                    giá trị cố định nào trước khi một trong hai kênh được đưa
+                    vào máy đo
+                    <span class="badge-status badge-established"
+                      >[Đã xác lập]</span
+                    >.
+                  </div>
+                </div>
+              </div>
+
+              <div class="point-card">
+                <div class="point-title">
+                  Ý 3: Mối liên hệ giữa "Nén" và "Rối hai mode"
+                </div>
+                <p class="point-explain">
+                  Trong quang học lượng tử, khi bạn gộp hai kênh ánh sáng đã
+                  được "nén" (từ các bài trước) qua một bộ chia tia, bạn sẽ thu
+                  được chính
+                  <strong>trạng thái rối lượng tử hai mode [39]</strong>. Vì
+                  vậy, nghiên cứu <strong>[39]</strong> là đích đến kết nối toàn
+                  bộ các bài toán nén và phi tuyến phía trước
+                  <span class="badge-status badge-established"
+                    >[Đã xác lập]</span
+                  >.
+                </p>
+                <div class="point-boxes">
+                  <div class="example-box">
+                    <span class="box-label">💡 Ví dụ đời thường</span>
+                    Giống như lấy hai sợi dây đơn lẻ bện xoắn vào nhau để tạo
+                    thành một sợi dây thừng đôi bền chắc.
+                  </div>
+                  <div class="caveat-box">
+                    <span class="box-label"
+                      >⚠️ Lưu ý: Chỗ ví dụ chưa chính xác</span
+                    >
+                    Sợi dây thừng bện bằng lực ma sát cơ học tại một chỗ, còn
+                    hai mode ánh sáng sau khi đan rối thì dù bay xa nhau hàng
+                    chục kilomet vẫn giữ nguyên sự phụ thuộc lượng tử.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- MÔ PHỎNG TƯƠNG TÁC 4: PHÉP ĐO RỐI LƯỢNG TỬ HAI MODE [39] -->
+          <div class="interactive-lab">
+            <div class="lab-header">
+              <span class="lab-title"
+                >🔬 Mô phỏng tương tác [39]: Phép đo trên Rối lượng tử Photon
+                Hai Mode</span
+              >
+              <span class="badge-status badge-established"
+                >Tương tác trực tiếp</span
+              >
+            </div>
+            <div class="lab-canvas-wrap">
+              <svg viewBox="0 0 650 170" width="100%" height="170">
+                <!-- Tinh thể phi tuyến ở giữa -->
+                <rect
+                  x="285"
+                  y="55"
+                  width="80"
+                  height="60"
+                  rx="8"
+                  fill="#0f766e"
+                />
+                <text
+                  x="325"
+                  y="83"
+                  text-anchor="middle"
+                  font-size="11"
+                  font-weight="bold"
+                  fill="#fff"
+                >
+                  Tinh thể
+                </text>
+                <text
+                  x="325"
+                  y="98"
+                  text-anchor="middle"
+                  font-size="11"
+                  font-weight="bold"
+                  fill="#fff"
+                >
+                  Phi tuyến
+                </text>
+
+                <!-- Tia sáng sang Kênh A (Trái) và Kênh B (Phải) -->
+                <line
+                  x1="285"
+                  y1="85"
+                  x2="130"
+                  y2="85"
+                  stroke="#14b8a6"
+                  stroke-width="4"
+                  stroke-dasharray="6 4"
+                />
+                <line
+                  x1="365"
+                  y1="85"
+                  x2="520"
+                  y2="85"
+                  stroke="#14b8a6"
+                  stroke-width="4"
+                  stroke-dasharray="6 4"
+                />
+
+                <!-- Trạm đo Kênh A (Hà Nội) -->
+                <rect
+                  id="box-mode-a"
+                  x="30"
+                  y="45"
+                  width="110"
+                  height="80"
+                  rx="10"
+                  fill="#f1f5f9"
+                  stroke="#0f766e"
+                  stroke-width="2"
+                />
+                <text
+                  x="85"
+                  y="72"
+                  text-anchor="middle"
+                  font-size="12"
+                  font-weight="bold"
+                  fill="#0f172a"
+                >
+                  Kênh 1 (Mode A)
+                </text>
+                <text
+                  id="text-mode-a"
+                  x="85"
+                  y="100"
+                  text-anchor="middle"
+                  font-size="12"
+                  font-weight="bold"
+                  fill="#d97706"
+                >
+                  Đang chồng chập
+                </text>
+
+                <!-- Trạm đo Kênh B (Đà Nẵng) -->
+                <rect
+                  id="box-mode-b"
+                  x="510"
+                  y="45"
+                  width="110"
+                  height="80"
+                  rx="10"
+                  fill="#f1f5f9"
+                  stroke="#0f766e"
+                  stroke-width="2"
+                />
+                <text
+                  x="565"
+                  y="72"
+                  text-anchor="middle"
+                  font-size="12"
+                  font-weight="bold"
+                  fill="#0f172a"
+                >
+                  Kênh 2 (Mode B)
+                </text>
+                <text
+                  id="text-mode-b"
+                  x="565"
+                  y="100"
+                  text-anchor="middle"
+                  font-size="12"
+                  font-weight="bold"
+                  fill="#d97706"
+                >
+                  Đang chồng chập
+                </text>
+              </svg>
+              <div
+                id="entangle-status"
+                style="
+                  font-weight: 700;
+                  color: var(--primary);
+                  margin-top: 0.3rem;
+                "
+              >
+                Trạng thái hiện tại: Hai mode đang đan rối ở trạng thái chồng
+                chập (chưa biết số hạt/pha cụ thể).
+              </div>
+              <div class="lab-controls">
+                <button class="btn active" onclick="measureTwoMode()">
+                  ⚡ Đo Kênh 1 (Mode A)
+                </button>
+                <button class="btn" onclick="resetTwoMode()">
+                  🔄 Tạo cặp rối hai mode mới
+                </button>
+              </div>
+            </div>
+            <p class="lab-disclaimer">
+              *Ghi chú khoa học: Mô phỏng đơn giản hóa sự tương quan số
+              photon/biến liên tục (continuous-variable entanglement) giữa hai
+              mode A và B khi thực hiện phép đo.
+            </p>
+          </div>
+
+          <div class="table-wrap">
+            <div class="section-heading">3. Bảng tóm tắt</div>
+            <table class="summary-table">
+              <thead>
+                <tr>
+                  <th>Thành phần</th>
+                  <th>Kênh 1 (Mode A)</th>
+                  <th>Kênh 2 (Mode B)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Trước khi đo</strong></td>
+                  <td>Chồng chập (chưa xác định)</td>
+                  <td>Chồng chập (chưa xác định)</td>
+                </tr>
+                <tr>
+                  <td><strong>Mối liên hệ [39]</strong></td>
+                  <td
+                    colspan="2"
+                    style="
+                      text-align: center;
+                      font-weight: 700;
+                      color: var(--primary);
+                    "
+                  >
+                    ⟵ Đan rối lượng tử (Entangled) ⟶
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>Khi đo Kênh 1</strong></td>
+                  <td>Xác định ngay trạng thái Kênh 1</td>
+                  <td>
+                    <strong>Tự động xác định ngay</strong> trạng thái Kênh 2
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div>
+            <div class="section-heading">4. Hiểu lầm thường gặp</div>
+            <div class="myth-card" onclick="this.classList.toggle('open')">
+              <button class="myth-header">
+                <span
+                  >❌ Nhiều người nghĩ: "Photon hai mode" nghĩa là chỉ có đúng 2
+                  hạt photon.</span
+                >
+                <span>▼ Bấm mở</span>
+              </button>
+              <div class="myth-body">
+                <strong>✅ Thực ra:</strong> "Hai mode" nghĩa là
+                <strong>2 kênh truyền (2 làn đường)</strong>, còn bên trong mỗi
+                kênh đó có thể chứa 1 hạt, 2 hạt, hoặc cả một chùm rất nhiều hạt
+                photon đan rối với nhau (gọi là đan rối biến liên tục –
+                continuous-variable entanglement)
+                <span class="badge-status badge-established">[Đã xác lập]</span
+                >.
+              </div>
+            </div>
+          </div>
+
+          <div class="summary-3lines">
+            <div class="section-heading">5. Tóm lại trong 3 dòng</div>
+            <ul>
+              <li>
+                <strong>Hai mode</strong> là hai kênh ánh sáng riêng biệt (khác
+                hướng đi hoặc khác tần số).
+              </li>
+              <li>
+                <strong>Rối lượng tử hai mode [39]</strong> tạo ra sự liên kết
+                hoàn hảo giữa hai kênh ánh sáng này nhờ tương tác phi tuyến.
+              </li>
+              <li>
+                Đây là tài nguyên trực tiếp để thực hiện bảo mật lượng tử và
+                truyền dẫn thông tin lượng tử đi xa.
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <div class="section-heading">6. Kiểm tra người nghe</div>
+            <div class="quiz-grid">
+              <div class="quiz-box">
+                <div class="quiz-q">
+                  Câu 1: Cụm từ "hai mode" trong vấn đề [39] có nghĩa là chỉ có
+                  2 hạt photon phải không?
+                </div>
+                <div class="quiz-options">
+                  <button
+                    class="quiz-opt"
+                    onclick="
+                      checkQuiz(
+                        this,
+                        true,
+                        'Chính xác! Hai mode là 2 kênh sóng riêng biệt, mỗi kênh có thể chứa một hoặc nhiều hạt photon.',
+                      )
+                    "
+                  >
+                    A. Không phải; "hai mode" là 2 kênh/chế độ sóng riêng biệt,
+                    trong mỗi kênh có thể có một hoặc nhiều hạt.
+                  </button>
+                  <button
+                    class="quiz-opt"
+                    onclick="
+                      checkQuiz(
+                        this,
+                        false,
+                        'Chưa đúng. Mode là kênh sóng, không phải số lượng hạt.',
+                      )
+                    "
+                  >
+                    B. Đúng, bắt buộc tổng cộng chỉ có 2 hạt photon.
+                  </button>
+                </div>
+                <div class="quiz-feedback"></div>
+              </div>
+              <div class="quiz-box">
+                <div class="quiz-q">
+                  Câu 2: Nếu kênh A và kênh B đang rối lượng tử hai mode [39],
+                  việc đo kênh A ở Hà Nội ảnh hưởng thế nào đến kênh B ở Đà
+                  Nẵng?
+                </div>
+                <div class="quiz-options">
+                  <button
+                    class="quiz-opt"
+                    onclick="
+                      checkQuiz(
+                        this,
+                        true,
+                        'Chính xác! Trạng thái lượng tử của kênh B tại Đà Nẵng lập tức được xác định tương ứng.',
+                      )
+                    "
+                  >
+                    A. Ngay khi biết kết quả đo của kênh A, trạng thái lượng tử
+                    của kênh B cũng lập tức được xác định.
+                  </button>
+                  <button
+                    class="quiz-opt"
+                    onclick="
+                      checkQuiz(
+                        this,
+                        false,
+                        'Chưa đúng. Hai kênh đan rối nên phụ thuộc tức thì vào kết quả đo.',
+                      )
+                    "
+                  >
+                    B. Không có bất kỳ liên hệ nào với kênh B.
+                  </button>
+                </div>
+                <div class="quiz-feedback"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="source-box secondary-detail">
+            <div class="section-heading">7. Nguồn & Độ chắc chắn</div>
+            <p>
+              <strong
+                >• Nguồn 1 (Sách giáo trình chuẩn – dễ đọc cho người
+                mới):</strong
+              >
+              Gerry, C., & Knight, P. (2004).
+              <em>Introductory Quantum Optics</em>. Cambridge University Press.
+              DOI:
+              <a
+                href="https://doi.org/10.1017/CBO9780511791239"
+                target="_blank"
+                rel="noopener"
+                >10.1017/CBO9780511791239</a
+              >.
+            </p>
+            <p>
+              <strong
+                >• Nguồn 2 (Bài báo bình duyệt tổng quan kinh điển):</strong
+              >
+              Braunstein, S. L., & van Loock, P. (2005). "Quantum information
+              with continuous variables". <em>Reviews of Modern Physics</em>,
+              77(2), 513–577. DOI:
+              <a
+                href="https://doi.org/10.1103/RevModPhys.77.513"
+                target="_blank"
+                rel="noopener"
+                >10.1103/RevModPhys.77.513</a
+              >.
+            </p>
+            <p>
+              <strong>• Độ chắc chắn:</strong> Lý thuyết và thực nghiệm về rối
+              lượng tử của photon hai mode là
+              <span class="badge-status badge-established">[Đã xác lập]</span>.
+              Để biết chính xác tên bài báo được đánh số <code>[39]</code> trong
+              tài liệu của bạn, hãy đối chiếu với trang Tài liệu tham khảo cuối
+              văn bản đó
+              <span class="badge-status badge-verify">[Cần kiểm chứng]</span>.
+            </p>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      // 1. Thanh tiến độ đọc & Đánh dấu mục lục khi cuộn
+      const progressBar = document.getElementById("progress-bar");
+      const sections = document.querySelectorAll(
+        "section.lecture-module, #nen-tang",
+      );
+      const tocLinks = document.querySelectorAll(".toc-link");
+
+      window.addEventListener("scroll", () => {
+        const scrollTop = window.scrollY;
+        const docHeight =
+          document.documentElement.scrollHeight - window.innerHeight;
+        const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+        progressBar.style.width = pct + "%";
+
+        let currentId = "nen-tang";
+        sections.forEach((sec) => {
+          const top = sec.offsetTop - 130;
+          if (scrollTop >= top) {
+            currentId = sec.getAttribute("id");
+          }
+        });
+
+        tocLinks.forEach((link) => {
+          link.classList.toggle(
+            "active",
+            link.getAttribute("href") === "#" + currentId,
+          );
+        });
+      });
+
+      // 2. Hiệu ứng hiện dần các thẻ Ý chính khi cuộn tới
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("visible");
+            }
+          });
+        },
+        { threshold: 0.12 },
+      );
+
+      document
+        .querySelectorAll(".point-card")
+        .forEach((card) => observer.observe(card));
+
+      // 3. Chế độ Sáng / Tối (Không dùng localStorage theo yêu cầu)
+      function toggleTheme() {
+        const html = document.documentElement;
+        const btn = document.getElementById("btn-theme");
+        if (html.getAttribute("data-theme") === "dark") {
+          html.setAttribute("data-theme", "light");
+          btn.textContent = "🌙 Giao diện Tối";
+        } else {
+          html.setAttribute("data-theme", "dark");
+          btn.textContent = "☀️ Giao diện Sáng";
+        }
+      }
+
+      // 4. Chế độ Trình chiếu
+      function togglePresentation() {
+        const body = document.body;
+        const btn = document.getElementById("btn-presentation");
+        body.classList.toggle("presentation-mode");
+        const isPres = body.classList.contains("presentation-mode");
+        btn.classList.toggle("active", isPres);
+        btn.textContent = isPres
+          ? "🖥️ Chế độ trình chiếu: BẬT"
+          : "🖥️ Chế độ trình chiếu: TẮT";
+      }
+
+      // 5. Xử lý câu hỏi trắc nghiệm
+      function checkQuiz(button, isCorrect, explanation) {
+        const box = button.closest(".quiz-box");
+        const opts = box.querySelectorAll(".quiz-opt");
+        const fb = box.querySelector(".quiz-feedback");
+
+        opts.forEach((opt) => {
+          opt.classList.remove("correct", "wrong");
+        });
+
+        if (isCorrect) {
+          button.classList.add("correct");
+          fb.style.background = "var(--success-light)";
+          fb.style.color = "var(--success)";
+          fb.textContent = "✅ " + explanation;
+        } else {
+          button.classList.add("wrong");
+          fb.style.background = "var(--danger-light)";
+          fb.style.color = "var(--danger)";
+          fb.textContent = "❌ " + explanation;
+        }
+        fb.style.display = "block";
+      }
+
+      // 6. Mô phỏng 1: Chắn photon [27]
+      let cavityHasPhoton = false;
+      function simBlockadeSend() {
+        const p1 = document.getElementById("photon-1");
+        const p2 = document.getElementById("photon-2-blocked");
+        const pEmit = document.getElementById("photon-emitted");
+        const status = document.getElementById("cavity-status-text");
+
+        pEmit.style.display = "none";
+        if (!cavityHasPhoton) {
+          cavityHasPhoton = true;
+          p1.style.display = "block";
+          p2.style.display = "none";
+          status.textContent =
+            "Trạng thái: Đã có 1 Photon kết nối mạnh với Atom — Mức năng lượng bị lệch đi!";
+          status.setAttribute("fill", "#d97706");
+        } else {
+          p2.style.display = "block";
+          status.textContent =
+            "CHẮN PHOTON [27]: Photon thứ 2 bị dội ngược ra vì không còn khớp mức năng lượng!";
+          status.setAttribute("fill", "#dc2626");
+        }
+      }
+
+      function simBlockadeRelease() {
+        const p1 = document.getElementById("photon-1");
+        const p2 = document.getElementById("photon-2-blocked");
+        const pEmit = document.getElementById("photon-emitted");
+        const status = document.getElementById("cavity-status-text");
+
+        if (cavityHasPhoton) {
+          cavityHasPhoton = false;
+          p1.style.display = "none";
+          p2.style.display = "none";
+          pEmit.style.display = "block";
+          status.textContent =
+            "Đã phát ra 1 đơn photon! Buồng trống trở lại và sẵn sàng đón hạt tiếp theo.";
+          status.setAttribute("fill", "#16a34a");
+        }
+      }
+
+      // 7. Mô phỏng 2: Bộ liên kết phi tuyến phân loại xung [33]
+      function setCouplerPulse(type) {
+        const beam = document.getElementById("coupler-beam");
+        const desc = document.getElementById("coupler-desc");
+        const btnLow = document.getElementById("btn-pulse-low");
+        const btnHigh = document.getElementById("btn-pulse-high");
+
+        if (type === "low") {
+          beam.setAttribute(
+            "d",
+            "M 40 50 L 200 50 L 250 72 L 325 92 L 400 113 L 450 135 L 600 135",
+          );
+          beam.setAttribute("stroke", "#d97706");
+          beam.setAttribute("stroke-width", "5");
+          desc.textContent =
+            "Đang chọn: Xung năng lượng THẤP (Yếu) ➔ Nhảy sang Kênh 2 (Ra Cổng Chéo)";
+          desc.style.color = "var(--accent)";
+          btnLow.classList.add("active");
+          btnHigh.classList.remove("active");
+        } else {
+          beam.setAttribute(
+            "d",
+            "M 40 50 L 200 50 L 250 72 L 400 72 L 450 50 L 600 50",
+          );
+          beam.setAttribute("stroke", "#0f766e");
+          beam.setAttribute("stroke-width", "8");
+          desc.textContent =
+            "Đang chọn: Xung năng lượng CAO (Mạnh) ➔ Tự đổi chiết suất phi tuyến, đi thẳng ra Cổng 1!";
+          desc.style.color = "var(--primary)";
+          btnHigh.classList.add("active");
+          btnLow.classList.remove("active");
+        }
+      }
+
+      // 8. Mô phỏng 3: Trạng thái nén [34]-[35]
+      function updateSqueeze(val) {
+        const ratio = val / 100;
+        const rx = 50 / ratio;
+        const ry = 50 * ratio;
+        const ellipse = document.getElementById("squeeze-ellipse");
+        const readout = document.getElementById("squeeze-readout");
+
+        ellipse.setAttribute("rx", rx.toFixed(1));
+        ellipse.setAttribute("ry", ry.toFixed(1));
+
+        const dx1 = (1 / ratio).toFixed(2);
+        const dx2 = ratio.toFixed(2);
+        readout.textContent = `Đang điều chỉnh: Sai số ΔX₁ = ${dx1} | Sai số ΔX₂ = ${dx2} (Tích bất định ΔX₁·ΔX₂ ≈ 1.00 không đổi)`;
+      }
+
+      // 9. Mô phỏng 4: Rối lượng tử photon hai mode [39]
+      function measureTwoMode() {
+        const outcomes = [
+          {
+            a: "Đo được: n = 3 photon (Pha +φ)",
+            b: "Tức thì: n = 3 photon (Pha −φ)",
+          },
+          {
+            a: "Đo được: n = 5 photon (Pha +φ)",
+            b: "Tức thì: n = 5 photon (Pha −φ)",
+          },
+          { a: "Đo được: Biên độ X₁ = +2.4", b: "Tức thì: Biên độ X₂ = +2.4" },
+        ];
+        const pick = outcomes[Math.floor(Math.random() * outcomes.length)];
+        document.getElementById("text-mode-a").textContent = pick.a;
+        document.getElementById("text-mode-b").textContent = pick.b;
+        document.getElementById("text-mode-a").setAttribute("fill", "#16a34a");
+        document.getElementById("text-mode-b").setAttribute("fill", "#16a34a");
+        document.getElementById("entangle-status").textContent =
+          "Đã đo Kênh 1! Nhờ rối lượng tử hai mode [39], trạng thái Kênh 2 lập tức được xác định tương ứng.";
+      }
+
+      function resetTwoMode() {
+        document.getElementById("text-mode-a").textContent = "Đang chồng chập";
+        document.getElementById("text-mode-b").textContent = "Đang chồng chập";
+        document.getElementById("text-mode-a").setAttribute("fill", "#d97706");
+        document.getElementById("text-mode-b").setAttribute("fill", "#d97706");
+        document.getElementById("entangle-status").textContent =
+          "Trạng thái hiện tại: Hai mode đang đan rối ở trạng thái chồng chập (chưa biết số hạt/pha cụ thể).";
+      }
+    </script>
+  </body>
+</html>
